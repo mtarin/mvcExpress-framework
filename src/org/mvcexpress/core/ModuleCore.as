@@ -3,6 +3,7 @@ import flash.display.DisplayObjectContainer;
 import flash.utils.getDefinitionByName;
 import org.mvcexpress.base.CommandMap;
 import org.mvcexpress.base.MediatorMap;
+import org.mvcexpress.base.ProcessMap;
 import org.mvcexpress.base.ProxyMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
@@ -22,6 +23,8 @@ public class ModuleCore {
 	
 	protected var mediatorMap:MediatorMap;
 	
+	protected var processMap:ProcessMap;
+
 	protected var commandMap:CommandMap;
 	
 	private var messenger:Messenger;
@@ -43,7 +46,8 @@ public class ModuleCore {
 		} else {
 			mediatorMap = new MediatorMap(messenger, proxyMap);
 		}
-		commandMap = new CommandMap(messenger, proxyMap, mediatorMap);
+		processMap = new ProcessMap(messenger);
+		commandMap = new CommandMap(messenger, proxyMap, mediatorMap, processMap);
 		
 		onInit();
 	}

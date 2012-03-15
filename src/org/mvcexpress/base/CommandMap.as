@@ -16,6 +16,7 @@ public class CommandMap {
 	private var messanger:Messenger;
 	private var proxyMap:ProxyMap;
 	private var mediatorMap:MediatorMap;
+	private var processMap:ProcessMap;
 	
 	private var classRegistry:Dictionary = new Dictionary();
 		
@@ -23,10 +24,11 @@ public class CommandMap {
 	CONFIG::debug
 	private var commandClassParamTypes:Dictionary = new Dictionary();
 	
-	public function CommandMap(messanger:Messenger, proxyMap:ProxyMap, mediatorMap:MediatorMap) {
+	public function CommandMap(messanger:Messenger, proxyMap:ProxyMap, mediatorMap:MediatorMap, processMap:ProcessMap) {
 		this.messanger = messanger;
 		this.proxyMap = proxyMap;
 		this.mediatorMap = mediatorMap;
+		this.processMap = processMap;
 	}
 	
 	/**
@@ -89,6 +91,7 @@ public class CommandMap {
 		command.messenger = messanger;
 		command.mediatorMap = mediatorMap;
 		command.proxyMap = proxyMap;
+		command.processMap = processMap;
 		
 		command.commandMap = this;
 		proxyMap.injectStuff(command, commandClass);
