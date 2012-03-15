@@ -15,7 +15,7 @@ import org.mvcexpress.namespace.pureLegsCore;
 public class ProxyMap {
 	
 	/** */
-	private var injectClassRegistry:Dictionary = new Dictionary();
+	private var proxyRegistry:Dictionary = new Dictionary();
 	
 	/** */
 	private var classInjectRules:Dictionary = new Dictionary();
@@ -40,11 +40,11 @@ public class ProxyMap {
 			injectClass = proxyClass;
 		}
 		var className:String = getQualifiedClassName(injectClass);
-		if (!injectClassRegistry[className + name]) {
+		if (!proxyRegistry[className + name]) {
 			use namespace pureLegsCore;
 			proxyObject.messanger = messenger;
 			injectStuff(proxyObject, proxyClass);
-			injectClassRegistry[className + name] = proxyObject;
+			proxyRegistry[className + name] = proxyObject;
 			proxyObject.register();
 		} else {
 			throw Error("Proxy object class is already mapped.[" + className + name + "]");
@@ -60,8 +60,8 @@ public class ProxyMap {
 	public function unmap(injectClass:Class, name:String = ""):void {
 		var className:String = getQualifiedClassName(injectClass);
 		use namespace pureLegsCore;
-		(injectClassRegistry[className + name] as Proxy).remove();
-		delete injectClassRegistry[className + name];
+		(proxyRegistry[className + name] as Proxy).remove();
+		delete proxyRegistry[className + name];
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class ProxyMap {
 		//use namespace pureLegsCore;
 		//proxyObject.remove();
 		//}
-		injectClassRegistry = null;
+		proxyRegistry = null;
 		classInjectRules = null;
 		messenger = null;
 	}
@@ -92,8 +92,8 @@ public class ProxyMap {
 		if (tempValue) {
 			if (tempClass) {
 				tempClassName = getQualifiedClassName(tempClass);
-				if (!injectClassRegistry[tempClassName]) {
-					injectClassRegistry[tempClassName] = tempValue;
+				if (!proxyRegistry[tempClassName]) {
+					proxyRegistry[tempClassName] = tempValue;
 				} else {
 					throw Error("Temp config sholud not be maped...");
 				}
@@ -107,13 +107,14 @@ public class ProxyMap {
 			///////////////////////////////////////////////////////////
 			// TODO : TEST inline function .. ( Putting inline function here ... makes commands slower.. WHY!!!)
 			rules = getInjectRules(signatureClass);
+			classInjectRules[signatureClass] = rules;
 				///////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////
 		}
 		
 		// injects all dependencies using rules.
 		for (var i:int = 0; i < rules.length; i++) {
-			var injectObject:Object = injectClassRegistry[rules[i].injectClassAndName];
+			var injectObject:Object = proxyRegistry[rules[i].injectClassAndName];
 			if (injectObject) {
 				object[rules[i].varName] = injectObject
 			} else {
@@ -123,13 +124,14 @@ public class ProxyMap {
 		
 		// dispose temporal injection if it was used.
 		if (tempClassName) {
-			delete injectClassRegistry[tempClassName];
+			delete proxyRegistry[tempClassName];
 		}
 	}
 	
 	/**
 	 * finds and cashes class injection point rules.
 	 */
+	// TODO : dublicated code.. consider moving to dedicated class...
 	private function getInjectRules(signatureClass:Class):Vector.<InjectRuleVO> {
 		var retVal:Vector.<InjectRuleVO> = new Vector.<InjectRuleVO>();
 		
@@ -156,8 +158,6 @@ public class ProxyMap {
 			
 			retVal.push(mapRule);
 		}
-		
-		classInjectRules[signatureClass] = retVal;
 		
 		return retVal;
 	}

@@ -74,10 +74,13 @@ public class ModuleCore {
 		commandMap.dispose();
 		mediatorMap.dispose();
 		proxyMap.dispose();
+		processMap.dispose();
 		
 		commandMap = null;
 		mediatorMap = null;
 		proxyMap = null;
+		processMap = null;
+		
 		messenger = null;
 	}
 	

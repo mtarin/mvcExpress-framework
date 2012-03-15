@@ -7,14 +7,24 @@ import org.mvcexpress.namespace.pureLegsCore;
  */
 public class Process {
 	
-	pureLegsCore var canConstruct:Boolean;
+	static pureLegsCore var canConstruct:Boolean;
+	
+	pureLegsCore var injects:Array = [];
 	
 	public function Process() {
-		
-		if (!pureLegsCore::canConstruct) {
+		use namespace pureLegsCore
+		if (!Process.canConstruct) {
 			throw Error("Processes can be constructed only by framework. (it is constructed automaticaly then needed.) Use processMap functions to manage your processes.");
 		}
 	}
+	
+	pureLegsCore function appendInjects(newInjects:Array):void {
+		use namespace pureLegsCore;
+		for (var i:int = 0; i < newInjects.length; i++) {
+			this.injects.push(newInjects[i]);
+		}
+	}	
+	
 	
 	// start process
 	public function init():void {
@@ -28,6 +38,8 @@ public class Process {
 	public function dispose():void {
 		// override to dispose your process.
 	}
+	
+
 	
 	protected function addProcess():void {
 		// TODO : add child process... (experimental..) 
