@@ -50,6 +50,8 @@ public class LiveAppModule extends ModuleCore {
 		//sendMessage(Msg.TEST, new Point(1, 5));
 		
 		trace("Hello mvcExpress!!!");
+		
+		processMap.startEnterFrame();
 	}
 
 }

@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample.view.main{
+import com.mindScriptAct.liveSample.engine.RenderProcess;
 import com.mindScriptAct.liveSample.LiveAppTest;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
@@ -30,6 +31,13 @@ public class LiveAppMediator extends Mediator {
 		
 		// to handle framework messages you will add message handler.
 		addHandler(DataMsg.TEST_DATA_CHANGED, handleTestDataChange);
+		
+		var testViewObject:ViewObject = new ViewObject();
+		
+		view.addChild(testViewObject);
+		
+		processMap.injectTo(RenderProcess, RenderProcess.NAME,  testViewObject);
+		
 	}
 	
 

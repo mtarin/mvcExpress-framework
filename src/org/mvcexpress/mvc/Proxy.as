@@ -1,4 +1,5 @@
 package org.mvcexpress.mvc {
+import org.mvcexpress.base.interfaces.IProcessMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
 
@@ -11,6 +12,8 @@ public class Proxy {
 	
 	/** @private */
 	pureLegsCore var messanger:Messenger;
+	
+	public var processMap:IProcessMap;
 	
 	public function Proxy(){
 	}

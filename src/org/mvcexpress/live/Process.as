@@ -9,6 +9,10 @@ public class Process {
 	
 	static pureLegsCore var canConstruct:Boolean;
 	
+	pureLegsCore var isRunning:Boolean = false;
+	
+	pureLegsCore var isInited:Boolean = false;
+	
 	pureLegsCore var injects:Array = [];
 	
 	public function Process() {
@@ -23,8 +27,7 @@ public class Process {
 		for (var i:int = 0; i < newInjects.length; i++) {
 			this.injects.push(newInjects[i]);
 		}
-	}	
-	
+	}
 	
 	// start process
 	public function init():void {
@@ -38,8 +41,6 @@ public class Process {
 	public function dispose():void {
 		// override to dispose your process.
 	}
-	
-
 	
 	protected function addProcess():void {
 		// TODO : add child process... (experimental..) 

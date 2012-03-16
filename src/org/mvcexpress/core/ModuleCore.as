@@ -24,7 +24,7 @@ public class ModuleCore {
 	protected var mediatorMap:MediatorMap;
 	
 	protected var processMap:ProcessMap;
-
+	
 	protected var commandMap:CommandMap;
 	
 	private var messenger:Messenger;
@@ -37,16 +37,17 @@ public class ModuleCore {
 		use namespace pureLegsCore;
 		messenger = Messenger.getInstance();
 		
-		proxyMap = new ProxyMap(messenger);
+		processMap = new ProcessMap(messenger);
+		
+		proxyMap = new ProxyMap(messenger, processMap);
 		// check if flex is used.
 		var uiComponentClass:Class = getFlexClass();
 		// if flex is used - special FlexMediatorMap Class is instantiated that wraps mediate() and unmediate() functions to handle flex 'creationComplete' isues.
 		if (uiComponentClass) {
-			mediatorMap = new FlexMediatorMap(messenger, proxyMap, uiComponentClass);
+			mediatorMap = new FlexMediatorMap(messenger, proxyMap, processMap, uiComponentClass);
 		} else {
-			mediatorMap = new MediatorMap(messenger, proxyMap);
+			mediatorMap = new MediatorMap(messenger, proxyMap, processMap);
 		}
-		processMap = new ProcessMap(messenger);
 		commandMap = new CommandMap(messenger, proxyMap, mediatorMap, processMap);
 		
 		onInit();

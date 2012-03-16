@@ -1,6 +1,7 @@
 package org.mvcexpress.mvc {
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.base.interfaces.IMediatorMap;
+import org.mvcexpress.base.interfaces.IProcessMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.messenger.MsgVO;
 import org.mvcexpress.namespace.pureLegsCore;
@@ -18,6 +19,8 @@ public class Mediator {
 	pureLegsCore var messanger:Messenger;
 	
 	public var mediatorMap:IMediatorMap;
+	
+	public var processMap:IProcessMap;
 	
 	public function Mediator() {
 		// should stay empty.

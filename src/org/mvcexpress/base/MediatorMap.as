@@ -13,16 +13,18 @@ import org.mvcexpress.namespace.pureLegsCore;
  */
 public class MediatorMap implements IMediatorMap {
 	
-	protected var proxyMap:ProxyMap;
-	protected var messanger:Messenger;
-	
 	protected var mediatorRegistry:Dictionary = new Dictionary();
 	
 	protected var viewRegistry:Dictionary = new Dictionary();
 	
-	public function MediatorMap(messanger:Messenger, proxyMap:ProxyMap) {
+	protected var messanger:Messenger;
+	protected var proxyMap:ProxyMap;
+	private var processMap:ProcessMap;
+	
+	public function MediatorMap(messanger:Messenger, proxyMap:ProxyMap, processMap:ProcessMap) {
 		this.messanger = messanger;
 		this.proxyMap = proxyMap;
+		this.processMap = processMap;
 	}
 	
 	/**
@@ -77,6 +79,7 @@ public class MediatorMap implements IMediatorMap {
 		var mediator:Mediator = new mediatorClass();
 		use namespace pureLegsCore;
 		mediator.messanger = messanger;
+		mediator.processMap = processMap;
 		mediator.mediatorMap = this;
 		
 		var viewClass:Class = viewObject.constructor;

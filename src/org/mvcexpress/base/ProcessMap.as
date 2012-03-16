@@ -2,12 +2,14 @@ package org.mvcexpress.base {
 import flash.display.MovieClip;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;
+import flash.events.FocusEvent;
 import flash.geom.Point;
 import com.mindScriptAct.liveSample.engine.TickProcess;
 import flash.utils.describeType;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.base.inject.InjectRuleVO;
+import org.mvcexpress.base.interfaces.IProcessMap;
 import org.mvcexpress.live.Process;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
@@ -16,7 +18,7 @@ import org.mvcexpress.namespace.pureLegsCore;
  * Handles live processes
  * @author Raimundas Banevicius (raima156@yahoo.com)
  */
-public class ProcessMap {
+public class ProcessMap implements IProcessMap {
 	private var messenger:Messenger;
 	
 	/** */
@@ -26,7 +28,7 @@ public class ProcessMap {
 	private var classInjectRules:Dictionary = new Dictionary();
 	
 	private var test_enterFrameProcesses:Vector.<Process> = new Vector.<Process>();
-	;
+	private var test_enterFrameTicker:MovieClip;
 	
 	public function ProcessMap(messenger:Messenger) {
 		this.messenger = messenger;
@@ -84,6 +86,7 @@ public class ProcessMap {
 	
 	}
 	
+	// TODO : implement inject object + name pairs for injection.
 	public function injectTo(processClass:Class, name:String = "", ... injects:Array):void {
 		trace("ProcessMap.injectTo > processClass : " + processClass + ", name : " + name + ", injects : " + injects);
 		var className:String = getQualifiedClassName(processClass);
@@ -126,14 +129,32 @@ public class ProcessMap {
 	
 	public function startEnterFrame():void {
 		trace("ProcessMap.startEnterFrame");
-		var test_enterFrameTicker:MovieClip = new MovieClip();
-		test_enterFrameTicker.addEventListener(Event.ENTER_FRAME, handleFrameTick);
+		use namespace pureLegsCore;
 		
+		// check if processes is inited.. if not - init them.
+		
+		// TODO : optimize... create vector of NOT inited processes of ticker.
+		for (var i:int = 0; i < test_enterFrameProcesses.length; i++) {
+			if (!test_enterFrameProcesses[i].isInited) {
+				// handle injections.
+				initInjections(test_enterFrameProcesses[i]);
+				// init
+				test_enterFrameProcesses[i].init();
+				
+				test_enterFrameProcesses[i].isInited = true;
+			}
+		}
+		
+		// TODO : add ticker name... 
+		test_enterFrameTicker = new MovieClip();
+		test_enterFrameTicker.addEventListener(Event.ENTER_FRAME, handleFrameTick);
 	
 	}
 	
+	
+	
 	private function handleFrameTick(event:Event):void {
-		//trace( "ProcessMap.handleFrameTick > event : " + event );
+		trace( "ProcessMap.handleFrameTick > event : " + event );
 		for (var i:int = 0; i < test_enterFrameProcesses.length; i++) {
 			test_enterFrameProcesses[i].run(0);
 		}
@@ -180,6 +201,41 @@ public class ProcessMap {
 		}
 		
 		return retVal;
+	}
+	
+	private function initInjections(process:Process):void {
+		use namespace pureLegsCore;
+		
+		var rules:Vector.<InjectRuleVO> = classInjectRules[(process as Object).constructor];
+		var injectObjects:Array = process.injects;
+		
+		for (var j:int = 0; j < injectObjects.length; j++) {
+			var injectObject:Object = injectObjects[j];
+			
+			var classDescription:String = getQualifiedClassName(injectObject);
+			
+			var injectRule:InjectRuleVO = null;
+			
+			for (var i:int = 0; i < rules.length; i++) {
+				if (rules[i].injectClassAndName == classDescription) {
+					injectRule = rules[i];
+					break;
+				}
+			}
+			if (injectRule) {
+				if (injectObject) {
+					process[rules[i].varName] = injectObject;
+				} else {
+					throw Error("Inject object is not found for class:" + rules[i].injectClassAndName);
+				}
+			} else {
+				throw Error("Inject rule is not found for object:" + injectObject);
+			}
+			
+		}
+	
+		// TODO : check if all injections are satesfied.
+	
 	}
 	
 	pureLegsCore function dispose():void {

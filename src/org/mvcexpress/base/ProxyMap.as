@@ -22,9 +22,11 @@ public class ProxyMap {
 	
 	/** Communication object for sending messages*/
 	private var messenger:Messenger;
+	private var processMap:ProcessMap;
 	
-	public function ProxyMap(messenger:Messenger) {
+	public function ProxyMap(messenger:Messenger, processMap:ProcessMap) {
 		this.messenger = messenger;
+		this.processMap = processMap;
 	}
 	
 	/**
@@ -34,7 +36,7 @@ public class ProxyMap {
 	 * @param	name		Optional name if you need more then one proxy instance of same class.
 	 */
 	public function map(proxyObject:Proxy, injectClass:Class = null, name:String = ""):void {
-		var proxyClass:Class = Object(proxyObject).constructor;
+		var proxyClass:Class = (proxyObject as Object).constructor;
 		
 		if (!injectClass) {
 			injectClass = proxyClass;
@@ -43,6 +45,7 @@ public class ProxyMap {
 		if (!proxyRegistry[className + name]) {
 			use namespace pureLegsCore;
 			proxyObject.messanger = messenger;
+			proxyObject.processMap = processMap;
 			injectStuff(proxyObject, proxyClass);
 			proxyRegistry[className + name] = proxyObject;
 			proxyObject.register();

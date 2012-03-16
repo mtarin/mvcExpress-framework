@@ -18,8 +18,6 @@ public class SetupEngineCommand extends Command {
 	public function execute(blank:Object):void {
 		trace("SetupEngineCommand.execute > blank : " + blank);
 		
-		var testData:Point = new Point(12, 20);
-		
 		var testVector:Vector.<int> = new Vector.<int>();
 		testVector.push(1);
 		testVector.push(2);
@@ -27,7 +25,7 @@ public class SetupEngineCommand extends Command {
 		testVector.push(4);
 		testVector.push(5);
 		
-		processMap.injectTo(RenderProcess, RenderProcess.NAME, testData, testVector);
+		processMap.injectTo(RenderProcess, RenderProcess.NAME, testVector);
 		
 		var testVector2:Vector.<TestVO> = new Vector.<TestVO>();
 		testVector2.push(new TestVO());
@@ -36,7 +34,7 @@ public class SetupEngineCommand extends Command {
 		
 		//processMap.addTimerProcess(TickProcess);
 		
-		processMap.addFrameProcess(RenderProcess);
+		processMap.addFrameProcess(RenderProcess, RenderProcess.NAME);
 	
 		//trace(processMap.hasProcess(RenderProcess));
 	
@@ -44,7 +42,7 @@ public class SetupEngineCommand extends Command {
 	
 		
 		
-		processMap.startEnterFrame();
+		
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.mindScriptAct.liveSample.model {
+import com.mindScriptAct.liveSample.engine.RenderProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
+import flash.geom.Point;
 import org.mvcexpress.mvc.Proxy;
 
 /**
@@ -40,6 +42,12 @@ public class TestProxy extends Proxy {
 	
 	override protected function onRegister():void {
 		trace("TestProxy.onRegister");
+		
+		
+		
+		var testData:Point = new Point(12, 20);
+		
+		processMap.injectTo(RenderProcess, RenderProcess.NAME, testData);
 	
 	}
 	
