@@ -39,7 +39,7 @@ public class ProcessMap implements IProcessMap {
 	//     process set up
 	//----------------------------------
 	
-	private function createProcess(processClass:Class, name:String):Process {
+	private function createProcess(processClass:Class, processName:String):Process {
 		var className:String = getQualifiedClassName(processClass);
 		use namespace pureLegsCore;
 		Process.canConstruct = true;
@@ -49,34 +49,34 @@ public class ProcessMap implements IProcessMap {
 			throw Error("Process creation failed. processClass must extend Procoss class.");
 		}
 		classInjectRules[processClass] = getInjectRules(processClass);
-		processRegistry[className + name] = process;
+		processRegistry[className + processName] = process;
 		return process;
 	}
 	
 	// TODO : consider adding named timer instances.. (to have many of them at same time)
-	public function addTimerProcess(processClass:Class, name:String = ""):void {
-		trace("ProcessMap.addTimerProcess > processClass : " + processClass + ", name : " + name);
+	public function addTimerProcess(processClass:Class, processName:String):void {
+		trace("ProcessMap.addTimerProcess > processClass : " + processClass + ", processName  : " + processName);
 	
 	}
 	
 	// TODO : consider adding named EnterFrame instances.. (to have many of them at same time)
-	public function addFrameProcess(processClass:Class, name:String = ""):void {
-		trace("ProcessMap.addFrameProcess > processClass : " + processClass + ", name : " + name);
+	public function addFrameProcess(processClass:Class, processName:String):void {
+		trace("ProcessMap.addFrameProcess > processClass : " + processClass + ", processName : " + processName);
 		var className:String = getQualifiedClassName(processClass);
-		var process:Process = processRegistry[className + name] as Process;
+		var process:Process = processRegistry[className + processName] as Process;
 		if (!process) {
-			process = createProcess(processClass, name);
+			process = createProcess(processClass, processName);
 		}
 		test_enterFrameProcesses.push(process);
 	}
 	
-	public function removeProcess(processClass:Class, name:String = ""):void {
-		trace("ProcessMap.removeProcess > processClass : " + processClass + ", name : " + name);
+	public function removeProcess(processClass:Class, processName:String):void {
+		trace("ProcessMap.removeProcess > processClass : " + processClass + ", processName : " + processName);
 	
 	}
 	
-	public function hasProcess(processClass:Class, name:String = ""):Boolean {
-		trace("ProcessMap.hasProcess > processClass : " + processClass + ", name : " + name);
+	public function hasProcess(processClass:Class, processName:String):Boolean {
+		trace("ProcessMap.hasProcess > processClass : " + processClass + ", processName : " + processName);
 		
 		return false;
 	}
@@ -87,15 +87,32 @@ public class ProcessMap implements IProcessMap {
 	}
 	
 	// TODO : implement inject object + name pairs for injection.
-	public function injectTo(processClass:Class, name:String = "", ... injects:Array):void {
-		trace("ProcessMap.injectTo > processClass : " + processClass + ", name : " + name + ", injects : " + injects);
+	public function injectTo(processClass:Class, processName:String, injectObject:Object, injectName:String = "", ... moreInjects:Array):void {
+		trace("ProcessMap.injectTo > processClass : " + processClass + ", processName : " + processName + ", injectObject : " + injectObject + ", injectName : " + injectName + ", moreInjects : " + moreInjects);
 		var className:String = getQualifiedClassName(processClass);
-		var process:Process = processRegistry[className + name] as Process;
+		var process:Process = processRegistry[className + processName] as Process;
 		if (!process) {
-			process = createProcess(processClass, name);
+			process = createProcess(processClass, processName);
 		}
 		use namespace pureLegsCore;
-		process.appendInjects(injects);
+		
+		var injectClassName:String = getQualifiedClassName(injectObject);
+		process.injects[injectClassName + injectName] = injectObject;
+		process.injectCount++
+		
+		for (var i:int = 0; i < moreInjects.length; i += 2) {
+			injectClassName = getQualifiedClassName(moreInjects[i]);
+			injectName = "";
+			if (moreInjects[i + 1]) {
+				if (moreInjects[i + 1] is String) {
+					injectName = moreInjects[i + 1];
+				} else {
+					throw Error("moreInjects Array every second member must be String. (moreInjects must be provided in pairs: injectObject and injectName.) ");
+				}
+			}
+			process.injects[injectClassName + injectName] = moreInjects[i];
+			process.injectCount++
+		}
 	
 	}
 	
@@ -151,10 +168,8 @@ public class ProcessMap implements IProcessMap {
 	
 	}
 	
-	
-	
 	private function handleFrameTick(event:Event):void {
-		trace( "ProcessMap.handleFrameTick > event : " + event );
+		trace("ProcessMap.handleFrameTick > event : " + event);
 		for (var i:int = 0; i < test_enterFrameProcesses.length; i++) {
 			test_enterFrameProcesses[i].run(0);
 		}
@@ -207,35 +222,22 @@ public class ProcessMap implements IProcessMap {
 		use namespace pureLegsCore;
 		
 		var rules:Vector.<InjectRuleVO> = classInjectRules[(process as Object).constructor];
-		var injectObjects:Array = process.injects;
 		
-		for (var j:int = 0; j < injectObjects.length; j++) {
-			var injectObject:Object = injectObjects[j];
-			
-			var classDescription:String = getQualifiedClassName(injectObject);
-			
-			var injectRule:InjectRuleVO = null;
+		if (rules.length == process.injectCount) {
 			
 			for (var i:int = 0; i < rules.length; i++) {
-				if (rules[i].injectClassAndName == classDescription) {
-					injectRule = rules[i];
-					break;
-				}
-			}
-			if (injectRule) {
+				
+				var injectObject:Object = process.injects[rules[i].injectClassAndName];
+				
 				if (injectObject) {
 					process[rules[i].varName] = injectObject;
 				} else {
-					throw Error("Inject object is not found for class:" + rules[i].injectClassAndName);
+					throw Error("Process " + process + " is not provided with inject object for:" + rules[i].injectClassAndName);
 				}
-			} else {
-				throw Error("Inject rule is not found for object:" + injectObject);
 			}
-			
+		} else {
+			throw Error("Process must be provided with exact number of inject objects, as there are [Inject] variables. (Process " + process + " has " + process.injectCount + " inject objects and " + rules.length + " [Inject] variables.)");
 		}
-	
-		// TODO : check if all injections are satesfied.
-	
 	}
 	
 	pureLegsCore function dispose():void {

@@ -6,6 +6,6 @@ package org.mvcexpress.base.interfaces {
  */
 public interface IProcessMap {
 	
-	function injectTo(processClass:Class, name:String = "", ... injects:Array):void;
+	function injectTo(processClass:Class, processName:String, injectObject:Object, injectName:String = "", ... morInjects:Array):void;
 }
 }

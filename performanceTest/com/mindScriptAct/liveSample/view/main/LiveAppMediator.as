@@ -5,7 +5,6 @@ import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
 import com.mindScriptAct.liveSample.model.TestProxy;
 import flash.events.MouseEvent;
-import flash.globalization.StringTools;
 import org.mvcexpress.mvc.Mediator;
 
 /**

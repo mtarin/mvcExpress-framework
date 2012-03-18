@@ -1,4 +1,5 @@
 package org.mvcexpress.live {
+import flash.utils.Dictionary;
 import org.mvcexpress.namespace.pureLegsCore;
 
 /**
@@ -13,19 +14,14 @@ public class Process {
 	
 	pureLegsCore var isInited:Boolean = false;
 	
-	pureLegsCore var injects:Array = [];
+	pureLegsCore var injects:Dictionary = new Dictionary();
+	
+	pureLegsCore var injectCount:int = 0;
 	
 	public function Process() {
 		use namespace pureLegsCore
 		if (!Process.canConstruct) {
 			throw Error("Processes can be constructed only by framework. (it is constructed automaticaly then needed.) Use processMap functions to manage your processes.");
-		}
-	}
-	
-	pureLegsCore function appendInjects(newInjects:Array):void {
-		use namespace pureLegsCore;
-		for (var i:int = 0; i < newInjects.length; i++) {
-			this.injects.push(newInjects[i]);
 		}
 	}
 	
