@@ -14,17 +14,26 @@ import org.mvcexpress.namespace.pureLegsCore;
  */
 public class Mediator {
 	
-	private var messageDataRegistry:Vector.<MsgVO> = new Vector.<MsgVO>();
+	/** @private */
+	pureLegsCore var messageDataRegistry:Vector.<MsgVO> = new Vector.<MsgVO>();
 	
 	/** @private */
 	pureLegsCore var messanger:Messenger;
+	
+	/** @private */
+	CONFIG::debug
+	static pureLegsCore var canConstruct:Boolean;	
 	
 	public var mediatorMap:IMediatorMap;
 	
 	public var processMap:IProcessMap;
 	
 	public function Mediator() {
-		// should stay empty.
+		CONFIG::debug {
+			if (!pureLegsCore::canConstruct) {
+				throw Error("Command "+this+" can be constructed only by framework. If you want to execute it - map it to message with commandMap.map(), or execute it dirrectly with commandMap.execute()")
+			}
+		}	
 	}
 	
 	/**
@@ -57,14 +66,15 @@ public class Mediator {
 	 * @param	handler	function that will be called then needed message is sent. this functino must expect one parameter. (you can set your custom type for this param object, or leave it as Object)
 	 */
 	protected function addHandler(type:String, handler:Function):void {
+		use namespace pureLegsCore;
 		CONFIG::debug {
 			if (handler.length < 1) {
 				throw Error("Every message handler function needs at least one parameter. You are trying to add handler function from " + getQualifiedClassName(this));
 			}
-			messageDataRegistry.push(pureLegsCore::messanger.addHandler(type, handler, getQualifiedClassName(this)));
+			messageDataRegistry.push(messanger.addHandler(type, handler, getQualifiedClassName(this)));
 			return;
 		}
-		messageDataRegistry.push(pureLegsCore::messanger.addHandler(type, handler));
+		messageDataRegistry.push(messanger.addHandler(type, handler));
 	}
 	
 	/**
@@ -82,6 +92,7 @@ public class Mediator {
 	 * @private
 	 * */
 	pureLegsCore function removeAllHandlers():void {
+		use namespace pureLegsCore;
 		for (var i:int = 0; i < messageDataRegistry.length; i++) {
 			messageDataRegistry[i].disabled = true;
 		}

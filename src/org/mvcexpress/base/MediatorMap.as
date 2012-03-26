@@ -3,6 +3,7 @@ package org.mvcexpress.base {
 import flash.utils.Dictionary;
 import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
+import flash.utils.getQualifiedSuperclassName;
 import org.mvcexpress.base.interfaces.IMediatorMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.mvc.Mediator;
@@ -34,6 +35,12 @@ public class MediatorMap implements IMediatorMap {
 	 * @param	mediatorClass	Mediator class that will be instantiated then viewClass object is passed to mediate function.
 	 */
 	public function map(viewClass:Class, mediatorClass:Class):void {
+		CONFIG::debug {
+			var mediatorClassSuperClassName:String = getQualifiedSuperclassName(mediatorClass);
+			if (mediatorClassSuperClassName != "org.mvcexpress.mvc::Mediator") {
+				throw Error("You are trying to map mediatorClass: " + mediatorClass + " Super class is: " + mediatorClassSuperClassName+". But it should be: 'org.mvcexpress.mvc::Mediator'.");
+			}
+		}
 		if (mediatorRegistry[viewClass]) {
 			throw Error("Mediator class is already maped with this view class");
 		}
@@ -77,8 +84,10 @@ public class MediatorMap implements IMediatorMap {
 	 * @param	mediatorClass	mediator class to mediate view object.
 	 */
 	public function mediateWith(viewObject:Object, mediatorClass:Class):void {
-		var mediator:Mediator = new mediatorClass();
 		use namespace pureLegsCore;
+		CONFIG::debug {Mediator.canConstruct = true}
+		var mediator:Mediator = new mediatorClass();
+		CONFIG::debug {Mediator.canConstruct = false}
 		mediator.messanger = messanger;
 		mediator.processMap = processMap;
 		mediator.mediatorMap = this;

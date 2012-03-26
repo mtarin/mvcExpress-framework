@@ -86,7 +86,9 @@ public class CommandMap {
 			validateCommandParams(commandClass, params);
 		}
 		
+		CONFIG::debug {Command.canConstruct = true;}
 		var command:Command = new commandClass();
+		CONFIG::debug {Command.canConstruct = false;}
 		
 		use namespace pureLegsCore;
 		command.messenger = messanger;
@@ -97,6 +99,8 @@ public class CommandMap {
 		command.commandMap = this;
 		proxyMap.injectStuff(command, commandClass);
 		
+		// TODO: check possibility to not send params if it is null.
+		// TODO: check possibility to send more then one param object.
 		command.execute(params);
 	
 		////// INLINE FUNCTION runCommand() END
@@ -116,7 +120,9 @@ public class CommandMap {
 					validateCommandParams(commandList[i], params);
 				}
 				
+				CONFIG::debug {Command.canConstruct = true;}
 				var command:Command = new commandList[i]();
+				CONFIG::debug {Command.canConstruct = false;}
 				
 				use namespace pureLegsCore;
 				command.messenger = messanger;

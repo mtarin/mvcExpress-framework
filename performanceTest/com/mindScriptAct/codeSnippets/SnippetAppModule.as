@@ -2,6 +2,7 @@ package com.mindScriptAct.codeSnippets {
 import com.gskinner.performance.PerformanceTest;
 import com.mindScriptAct.codeSnippets.controller.params.ComplexParams;
 import com.mindScriptAct.codeSnippets.controller.SampleCommand;
+import com.mindScriptAct.codeSnippets.controller.SampleEmptyCommand;
 import com.mindScriptAct.codeSnippets.messages.Msg;
 import com.mindScriptAct.codeSnippets.model.ISampleEmptyProxy;
 import com.mindScriptAct.codeSnippets.model.ISampleProxy;
@@ -9,6 +10,7 @@ import com.mindScriptAct.codeSnippets.model.SampleEmptyProxy;
 import com.mindScriptAct.codeSnippets.model.SampleProxy;
 import com.mindScriptAct.codeSnippets.view.keyboard.KeyboardMediator;
 import com.mindScriptAct.codeSnippets.view.SampleAppMediator;
+import com.mindScriptAct.modularSample.view.ModularSampleMediator;
 import flash.display.Sprite;
 import org.mvcexpress.core.ModuleCore;
 
@@ -59,6 +61,13 @@ public class SnippetAppModule extends ModuleCore {
 		////////////////////////////
 		
 		mediatorMap.map(MvcExpressSnippets, SampleAppMediator);
+		
+		// bad maping... (throws error.)
+		//mediatorMap.map(Sprite, Sprite);
+		
+		// bad execute test...
+		//var badCommand:SampleEmptyCommand = new SampleEmptyCommand();
+		//badCommand.execute(null);
 		
 		////////////////////////////
 		// controller
