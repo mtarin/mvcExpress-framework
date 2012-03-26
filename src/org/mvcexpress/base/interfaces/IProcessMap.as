@@ -1,3 +1,4 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.base.interfaces {
 
 /**
@@ -6,6 +7,6 @@ package org.mvcexpress.base.interfaces {
  */
 public interface IProcessMap {
 	
-	function injectTo(processClass:Class, name:String = "", ... injects:Array):void;
+	function injectTo(processClass:Class, processName:String, injectObject:Object, injectName:String = "", ... morInjects:Array):void;
 }
 }

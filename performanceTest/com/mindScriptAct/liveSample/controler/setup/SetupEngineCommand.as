@@ -1,6 +1,7 @@
 package com.mindScriptAct.liveSample.controler.setup {
 import com.bit101.components.Accordion;
-import com.mindScriptAct.liveSample.engine.RenderProcess;
+import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
+//import com.mindScriptAct.liveSample.engine.RenderProcess;
 import com.mindScriptAct.liveSample.engine.TestVO;
 import com.mindScriptAct.liveSample.engine.TickProcess;
 import flash.geom.Point;
@@ -18,6 +19,7 @@ public class SetupEngineCommand extends Command {
 	public function execute(blank:Object):void {
 		trace("SetupEngineCommand.execute > blank : " + blank);
 		
+		/*
 		var testVector:Vector.<int> = new Vector.<int>();
 		testVector.push(1);
 		testVector.push(2);
@@ -41,7 +43,9 @@ public class SetupEngineCommand extends Command {
 		//processMap.removeProcess(RenderProcess);
 	
 		
+		*/
 		
+		processMap.addFrameProcess(HeroProcess, HeroProcess.NAME);
 		
 	}
 

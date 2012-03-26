@@ -65,7 +65,7 @@ public class MediatorMap implements IMediatorMap {
 		if (mediatorClass) {
 			mediateWith(viewObject, mediatorClass);
 		} else {
-			throw Error("View object class is not mapped with any mediator class. us. mediatorMap.mapMediator()");
+			throw Error("View object class:"+viewClass+" is not mapped with any mediator class. use mediatorMap.map()");
 		}
 	}
 	

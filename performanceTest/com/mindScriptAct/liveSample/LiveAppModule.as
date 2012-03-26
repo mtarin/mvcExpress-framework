@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample {
+import com.mindScriptAct.liveSample.controler.hero.InitHeroCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupControlerCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupEngineCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupModelCommand;
@@ -33,8 +34,8 @@ public class LiveAppModule extends ModuleCore {
 		// map mediators(you can map them here.. or move it to command.)
 		commandMap.execute(SetupViewCommand);
 		
-		
 		commandMap.execute(SetupEngineCommand)
+		
 	}
 	
 	public function start(main:LiveAppTest):void {
@@ -50,6 +51,9 @@ public class LiveAppModule extends ModuleCore {
 		//sendMessage(Msg.TEST, new Point(1, 5));
 		
 		trace("Hello mvcExpress!!!");
+		
+		commandMap.execute(InitHeroCommand);
+		
 		
 		processMap.startEnterFrame();
 	}

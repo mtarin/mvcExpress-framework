@@ -1,5 +1,8 @@
 package com.mindScriptAct.liveSample.controler.setup {
+import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
+import com.mindScriptAct.liveSample.model.hero.HeroProxy;
 import com.mindScriptAct.liveSample.model.TestProxy;
+import flash.geom.Point;
 import org.mvcexpress.mvc.Command;
 
 /**
@@ -13,10 +16,13 @@ public class SetupModelCommand extends Command {
 	public function execute(blank:Object):void {
 		trace( "SetupModelCommand.execute > blank : " + blank);
 		
-		// construct and map a proxy object for injection.
-		// after this you will be able to [Inject] proxies in your commands, mediators and ather proxies.
-		proxyMap.map(new TestProxy());
+		//proxyMap.map(new TestProxy());
 		
+		var heroPosition:Point = new Point();
+		var heroDirection:Point = new Point();
+		
+		processMap.injectTo(HeroProcess, HeroProcess.NAME, heroPosition, "heroPosition", heroDirection, "heroDirection");
+		proxyMap.map(new HeroProxy(heroPosition, heroDirection));
 	}
 
 }

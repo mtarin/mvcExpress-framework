@@ -17,7 +17,7 @@ public class SampleProxy extends Proxy implements ISampleProxy {
 	[Inject]
 	public var sampleEmptyProxyInterfaced:ISampleEmptyProxy;
 	
-	[Inject(namespace = 'namedSampleEmptyProxy')]
+	[Inject(name = 'namedSampleEmptyProxy')]
 	public var sampleEmptyProxyInterfacedAndNamed:ISampleEmptyProxy;
 	
 	public var testData:String = "someTestData";

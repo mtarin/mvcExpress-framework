@@ -1,5 +1,5 @@
 package com.mindScriptAct.liveSample.engine {
-import com.mindScriptAct.liveSample.view.main.ViewObject;
+//import com.mindScriptAct.liveSample.view.main.ViewObject;
 import flash.geom.Point;
 import org.mvcexpress.live.Process;
 
@@ -19,8 +19,8 @@ public class RenderProcess extends Process {
 	[Inject]
 	public var testVector2:Vector.<TestVO>;
 	
-	[Inject]
-	public var testViewObject:ViewObject;
+	//[Inject]
+	//public var testViewObject:ViewObject;
 	
 	public function RenderProcess() {
 	
@@ -39,7 +39,7 @@ public class RenderProcess extends Process {
 			testData.x = 0
 		}
 		
-		testViewObject.x = testData.x;
+		//testViewObject.x = testData.x;
 		
 	}
 
