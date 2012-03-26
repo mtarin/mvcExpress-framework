@@ -1,7 +1,7 @@
 package com.mindScriptAct.liveSample.controler.setup {
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.model.hero.HeroProxy;
-import com.mindScriptAct.liveSample.model.TestProxy;
+import com.mindScriptAct.liveSample.model.test.TestProxy;
 import flash.geom.Point;
 import org.mvcexpress.mvc.Command;
 
@@ -16,7 +16,7 @@ public class SetupModelCommand extends Command {
 	public function execute(blank:Object):void {
 		trace( "SetupModelCommand.execute > blank : " + blank);
 		
-		//proxyMap.map(new TestProxy());
+		proxyMap.map(new TestProxy());
 		
 		var heroPosition:Point = new Point();
 		var heroDirection:Point = new Point();

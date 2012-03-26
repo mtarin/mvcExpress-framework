@@ -1,4 +1,4 @@
-package com.mindScriptAct.liveSample.view.main {
+package com.mindScriptAct.liveSample.view.test {
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	
@@ -10,7 +10,6 @@ package com.mindScriptAct.liveSample.view.main {
 public class ViewObject extends Sprite {
 	
 	public function ViewObject() {
-		
 		
 		var rectangle:Shape = new Shape();
 		rectangle.graphics.lineStyle(0.1, 0xFF0000);

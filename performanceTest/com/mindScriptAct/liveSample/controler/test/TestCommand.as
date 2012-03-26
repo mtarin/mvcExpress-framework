@@ -1,5 +1,5 @@
 package com.mindScriptAct.liveSample.controler.test {
-import com.mindScriptAct.liveSample.model.TestProxy;
+import com.mindScriptAct.liveSample.model.test.TestProxy;
 import flash.geom.Point;
 import org.mvcexpress.mvc.Command;
 	

@@ -1,5 +1,6 @@
-package com.mindScriptAct.liveSample.engine {
+package com.mindScriptAct.liveSample.engine.test {
 //import com.mindScriptAct.liveSample.view.main.ViewObject;
+import com.mindScriptAct.liveSample.view.test.ViewObject;
 import flash.geom.Point;
 import org.mvcexpress.live.Process;
 
@@ -7,8 +8,8 @@ import org.mvcexpress.live.Process;
  * COMMENT
  * @author Raimundas Banevicius (raima156@yahoo.com)
  */
-public class RenderProcess extends Process {
-	static public const NAME:String = "RenderProcess";
+public class TestProcess extends Process {
+	static public const NAME:String = "TestProcess";
 	
 	[Inject]
 	public var testData:Point;
@@ -19,19 +20,15 @@ public class RenderProcess extends Process {
 	[Inject]
 	public var testVector2:Vector.<TestVO>;
 	
-	//[Inject]
-	//public var testViewObject:ViewObject;
-	
-	public function RenderProcess() {
-	
-	}
+	[Inject]
+	public var testViewObject:ViewObject;
 	
 	override public function init():void {
 		trace("RenderProcess.init");
 	}
 	
 	override public function run(timer:int):void {
-		trace("RenderProcess.run > timer : " + timer);
+		//trace("RenderProcess.run > timer : " + timer);
 	
 		testData.x++;
 		
@@ -39,7 +36,11 @@ public class RenderProcess extends Process {
 			testData.x = 0
 		}
 		
-		//testViewObject.x = testData.x;
+		testViewObject.x = testData.x;
+		
+	}
+	
+	override public function dispose():void {
 		
 	}
 

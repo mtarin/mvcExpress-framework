@@ -1,5 +1,5 @@
-package com.mindScriptAct.liveSample.model {
-import com.mindScriptAct.liveSample.engine.RenderProcess;
+package com.mindScriptAct.liveSample.model.test {
+import com.mindScriptAct.liveSample.engine.test.TestProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import flash.geom.Point;
 import org.mvcexpress.mvc.Proxy;
@@ -32,13 +32,6 @@ public class TestProxy extends Proxy {
 	}
 	
 	//----------------------------------
-	//     onRegister() function is tregered then proxy is registered with framework.
-	//        you will want to use it instead of constructor then you have other proxies injected.
-	//
-	//     onRemove() is to dispose proxy then it is unregistered from framework.
-	//
-	//    these functions are raraly used. 
-	//----------------------------------
 	
 	override protected function onRegister():void {
 		trace("TestProxy.onRegister");
@@ -46,8 +39,7 @@ public class TestProxy extends Proxy {
 		
 		
 		var testData:Point = new Point(12, 20);
-		
-		processMap.injectTo(RenderProcess, RenderProcess.NAME, testData);
+		processMap.injectTo(TestProcess, TestProcess.NAME, testData);
 	
 	}
 	

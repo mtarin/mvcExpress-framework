@@ -1,4 +1,4 @@
-package com.mindScriptAct.liveSample.engine {
+package com.mindScriptAct.liveSample.engine.test {
 	
 /**
  * COMMENT

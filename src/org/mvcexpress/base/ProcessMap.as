@@ -5,7 +5,6 @@ import flash.events.AsyncErrorEvent;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.geom.Point;
-import com.mindScriptAct.liveSample.engine.TickProcess;
 import flash.utils.describeType;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
