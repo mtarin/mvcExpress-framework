@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample.controler.setup {
+import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.model.hero.HeroProxy;
 import com.mindScriptAct.liveSample.model.test.TestProxy;

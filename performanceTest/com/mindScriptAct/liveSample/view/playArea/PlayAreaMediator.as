@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample.view.playArea {
+import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.view.hero.Hero;

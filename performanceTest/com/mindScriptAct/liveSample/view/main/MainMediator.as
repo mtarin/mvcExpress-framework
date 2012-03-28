@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample.view.main {
+import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.test.TestProcess;
 import com.mindScriptAct.liveSample.LiveAppTest;
 import com.mindScriptAct.liveSample.view.playArea.PlayArea;
@@ -9,7 +10,7 @@ import org.mvcexpress.mvc.Mediator;
  * TODO:CLASS COMMENT
  * @author Raimundas Banevicius (raima156@yahoo.com)
  */
-public class LiveAppMediator extends Mediator {
+public class MainMediator extends Mediator {
 	
 	[Inject]
 	public var view:LiveAppTest;
@@ -24,9 +25,9 @@ public class LiveAppMediator extends Mediator {
 		playScreen.x = 50;
 		playScreen.y = 50;
 		
-		var testObj:ViewObject = new ViewObject();
-		processMap.injectTo(TestProcess, TestProcess.NAME, testObj);
-		view.addChild(testObj);
+		//var testObj:ViewObject = new ViewObject();
+		//processMap.injectTo(FrameTickerId.RENDER, TestProcess, TestProcess.NAME, testObj);
+		//view.addChild(testObj);
 	}
 	
 	override public function onRemove():void {

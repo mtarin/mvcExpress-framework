@@ -19,6 +19,8 @@ public class Process {
 	
 	pureLegsCore var injectCount:int = 0;
 	
+	public var lastRunTime:int = 0;
+	
 	public function Process() {
 		use namespace pureLegsCore
 		if (!Process.canConstruct) {

@@ -1,5 +1,6 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.base {
+import adobe.utils.CustomActions;
 import flash.display.MovieClip;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;
@@ -8,6 +9,7 @@ import flash.geom.Point;
 import flash.utils.describeType;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
+import flash.utils.getTimer;
 import org.mvcexpress.base.inject.InjectRuleVO;
 import org.mvcexpress.base.interfaces.IProcessMap;
 import org.mvcexpress.live.Process;
@@ -27,12 +29,53 @@ public class ProcessMap implements IProcessMap {
 	/** */
 	private var classInjectRules:Dictionary = new Dictionary();
 	
-	private var test_enterFrameProcesses:Vector.<Process> = new Vector.<Process>();
+	/////////
+	private var frameTickerRegistry:Dictionary = new Dictionary(); /* of Int by String */
+	private var frameTickers:Vector.<FrameTicker> = new Vector.<FrameTicker>();
+	private var runningFrameTickers:Vector.<FrameTicker> = new Vector.<FrameTicker>();
+	
+	/////////
+	private var timerTickerRegistry:Dictionary = new Dictionary(); /* of Int by String */
+	private var timerTickers:Vector.<TimerTicker> = new Vector.<TimerTicker>();
+	
+	/////////
 	private var test_enterFrameTicker:MovieClip;
 	
+	//
 	public function ProcessMap(messenger:Messenger) {
 		this.messenger = messenger;
 	
+	}
+	
+	//----------------------------------
+	//     ticker set up
+	//----------------------------------
+	
+	/**
+	 *
+	 * @param	tickerName
+	 */
+	public function initFrameTicker(tickerName:String):void {
+		if (frameTickerRegistry[tickerName]) {
+			throw Error("Frame ticker with name" + tickerName + " is already initialized.");
+		}
+		var ticker:FrameTicker = new FrameTicker(tickerName);
+		frameTickerRegistry[tickerName] = frameTickers.length;
+		frameTickers.push(ticker);
+	}
+	
+	/**
+	 *
+	 * @param	tickerName
+	 * @param	frequency
+	 */
+	public function initTimerTicker(tickerName:String, frequency:int = 100):void {
+		if (timerTickerRegistry[tickerName]) {
+			throw Error("Timer ticker with name" + tickerName + " is already initialized.");
+		}
+		var ticker:TimerTicker = new TimerTicker(tickerName, frequency);
+		timerTickerRegistry[tickerName] = frameTickers.length;
+		timerTickers.push(ticker);
 	}
 	
 	//----------------------------------
@@ -54,28 +97,34 @@ public class ProcessMap implements IProcessMap {
 	}
 	
 	// TODO : consider adding named timer instances.. (to have many of them at same time)
-	public function addTimerProcess(processClass:Class, processName:String):void {
+	public function addTimerProcess(tickerName:String, processClass:Class, processName:String):void {
 		trace("ProcessMap.addTimerProcess > processClass : " + processClass + ", processName  : " + processName);
 	
 	}
 	
 	// TODO : consider adding named EnterFrame instances.. (to have many of them at same time)
-	public function addFrameProcess(processClass:Class, processName:String):void {
-		trace("ProcessMap.addFrameProcess > processClass : " + processClass + ", processName : " + processName);
+	public function addFrameProcess(tickerName:String, processClass:Class, processName:String):void {
+		trace("ProcessMap.addFrameProcess > tickerName : " + tickerName + ", processClass : " + processClass + ", processName : " + processName);
+		// get ticker
+		if (frameTickerRegistry[tickerName] == null) {
+			throw Error("There is no initialized frame ticker with name:" + tickerName);
+		}
+		var ticker:FrameTicker = frameTickers[frameTickerRegistry[tickerName]];
+		// get process
 		var className:String = getQualifiedClassName(processClass);
 		var process:Process = processRegistry[className + processName] as Process;
 		if (!process) {
 			process = createProcess(processClass, processName);
 		}
-		test_enterFrameProcesses.push(process);
+		ticker.processes.push(process);
 	}
 	
-	public function removeProcess(processClass:Class, processName:String):void {
+	public function removeProcess(tickerName:String, processClass:Class, processName:String):void {
 		trace("ProcessMap.removeProcess > processClass : " + processClass + ", processName : " + processName);
 	
 	}
 	
-	public function hasProcess(processClass:Class, processName:String):Boolean {
+	public function hasProcess(tickerName:String, processClass:Class, processName:String):Boolean {
 		trace("ProcessMap.hasProcess > processClass : " + processClass + ", processName : " + processName);
 		
 		return false;
@@ -143,40 +192,56 @@ public class ProcessMap implements IProcessMap {
 	//    enter frame funcions 
 	//----------------------------------	
 	
-	public function startEnterFrame():void {
-		//trace("ProcessMap.startEnterFrame");
-		use namespace pureLegsCore;
+	public function startFrameTicker(tickerName:String):void {
 		
-		// check if processes is inited.. if not - init them.
+		// get ticker
+		if (frameTickerRegistry[tickerName] == null) {
+			throw Error("There is no initialized frame ticker with name:" + tickerName);
+		}
+		var ticker:FrameTicker = frameTickers[frameTickerRegistry[tickerName]];
 		
-		// TODO : optimize... create vector of NOT inited processes of ticker.
-		for (var i:int = 0; i < test_enterFrameProcesses.length; i++) {
-			if (!test_enterFrameProcesses[i].isInited) {
-				// handle injections.
-				initInjections(test_enterFrameProcesses[i]);
-				// init
-				test_enterFrameProcesses[i].init();
-				
-				test_enterFrameProcesses[i].isInited = true;
+		if (!ticker.isRunning) {
+			use namespace pureLegsCore;
+			var processes:Vector.<Process> = ticker.processes;
+			for (var i:int = 0; i < processes.length; i++) {
+				if (!processes[i].isInited) {
+					// handle injections.
+					initInjections(processes[i]);
+					// init
+					processes[i].init();
+					processes[i].isInited = true;
+				}
 			}
+			//
+			ticker.isRunning = true;
+			runningFrameTickers.push(ticker);
+		} else {
+			throw Error("Frame ticker with name :" + tickerName + " is already started.");
 		}
 		
-		// TODO : add ticker name... 
-		test_enterFrameTicker = new MovieClip();
-		test_enterFrameTicker.addEventListener(Event.ENTER_FRAME, handleFrameTick);
+		// start enter frame ticker
+		if (!test_enterFrameTicker) {
+			test_enterFrameTicker = new MovieClip();
+			test_enterFrameTicker.addEventListener(Event.ENTER_FRAME, handleFrameTick);
+		}
 	
 	}
 	
 	private function handleFrameTick(event:Event):void {
 		//trace("ProcessMap.handleFrameTick > event : " + event);
-		for (var i:int = 0; i < test_enterFrameProcesses.length; i++) {
-			test_enterFrameProcesses[i].run(0);
+		var runTime:int = getTimer();
+		for (var t:int = 0; t < runningFrameTickers.length; t++) {
+			var processes:Vector.<Process> = runningFrameTickers[t].processes;
+			for (var p:int = 0; p < processes.length; p++) {
+				processes[p].run(runTime);
+				processes[p].lastRunTime = runTime;
+			}
 		}
 	}
 	
 	public function stopEnterFrame():void {
 		//trace("ProcessMap.stopEnterFrame");
-	
+		// TODO
 	}
 	
 	//----------------------------------
@@ -246,3 +311,31 @@ public class ProcessMap implements IProcessMap {
 	}
 }
 }
+import org.mvcexpress.live.Process;
+
+//----------------------------------
+//     private ticker classes
+//----------------------------------
+
+class TimerTicker {
+	public var tickerName:String;
+	public var frequency:int;
+	
+	function TimerTicker(tickerName:String, frequency:int) {
+		this.tickerName = tickerName;
+		this.frequency = frequency;
+	
+	}
+}
+
+class FrameTicker {
+	public var tickerName:String;
+	public var processes:Vector.<Process> = new Vector.<Process>();
+	public var isRunning:Boolean;
+	
+	function FrameTicker(tickerName:String) {
+		this.tickerName = tickerName;
+	
+	}
+}
+

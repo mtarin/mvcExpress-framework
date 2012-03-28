@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample.model.test {
+import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.test.TestProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import flash.geom.Point;
@@ -39,7 +40,7 @@ public class TestProxy extends Proxy {
 		
 		
 		var testData:Point = new Point(12, 20);
-		processMap.injectTo(TestProcess, TestProcess.NAME, testData);
+		//processMap.injectTo(FrameTickerId.RENDER, TestProcess, TestProcess.NAME, testData);
 	
 	}
 	

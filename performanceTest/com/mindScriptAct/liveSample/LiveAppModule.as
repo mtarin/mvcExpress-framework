@@ -1,4 +1,6 @@
 package com.mindScriptAct.liveSample {
+import com.mindScriptAct.liveSample.constants.FrameTickerId;
+import com.mindScriptAct.liveSample.constants.TimerTickerId;
 import com.mindScriptAct.liveSample.controler.hero.InitHeroCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupControlerCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupEngineCommand;
@@ -24,6 +26,10 @@ public class LiveAppModule extends ModuleCore {
 		CONFIG::debug {
 			checkClassStringConstants(Msg, DataMsg, ViewMsg);
 		}
+		
+		processMap.initFrameTicker(FrameTickerId.RENDER);
+		processMap.initTimerTicker(TimerTickerId.SPAWNER);
+		
 		
 		// map commands (you can map them here.. or move it to command.)
 		commandMap.execute(SetupControlerCommand);
@@ -55,7 +61,7 @@ public class LiveAppModule extends ModuleCore {
 		commandMap.execute(InitHeroCommand);
 		
 		
-		processMap.startEnterFrame();
+		processMap.startFrameTicker(FrameTickerId.RENDER);
 	}
 
 }

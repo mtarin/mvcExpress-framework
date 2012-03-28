@@ -1,5 +1,6 @@
 package com.mindScriptAct.liveSample.controler.setup {
 import com.bit101.components.Accordion;
+import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.engine.test.TestProcess;
 import com.mindScriptAct.liveSample.engine.test.TestVO;
@@ -19,7 +20,7 @@ public class SetupEngineCommand extends Command {
 	public function execute(blank:Object):void {
 		trace("SetupEngineCommand.execute > blank : " + blank);
 		
-		///*
+		/*
 		var testVector:Vector.<int> = new Vector.<int>();
 		testVector.push(1);
 		testVector.push(2);
@@ -27,16 +28,16 @@ public class SetupEngineCommand extends Command {
 		testVector.push(4);
 		testVector.push(5);
 		
-		processMap.injectTo(TestProcess, TestProcess.NAME, testVector);
+		processMap.injectTo(FrameTickerId.RENDER, TestProcess, TestProcess.NAME, testVector);
 		
 		var testVector2:Vector.<TestVO> = new Vector.<TestVO>();
 		testVector2.push(new TestVO());
 		
-		processMap.injectTo(TestProcess, TestProcess.NAME, testVector2);
+		processMap.injectTo(FrameTickerId.RENDER, TestProcess, TestProcess.NAME, testVector2);
 		
 		//processMap.addTimerProcess(TickProcess);
 		
-		processMap.addFrameProcess(TestProcess, TestProcess.NAME);
+		processMap.addFrameProcess(FrameTickerId.RENDER, TestProcess, TestProcess.NAME);
 		
 		//trace(processMap.hasProcess(TestProcess`));
 		
@@ -44,7 +45,7 @@ public class SetupEngineCommand extends Command {
 		
 		//*/
 		
-		processMap.addFrameProcess(HeroProcess, HeroProcess.NAME);
+		processMap.addFrameProcess(FrameTickerId.RENDER, HeroProcess, HeroProcess.NAME);
 	
 	}
 
