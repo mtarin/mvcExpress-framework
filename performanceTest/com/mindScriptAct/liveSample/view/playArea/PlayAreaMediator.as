@@ -3,8 +3,11 @@ import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
+import com.mindScriptAct.liveSample.messages.ViewMsg;
 import com.mindScriptAct.liveSample.view.hero.Hero;
+import com.mindScriptAct.liveSample.view.playArea.components.Blob;
 import com.mindScriptAct.liveSample.view.playArea.components.CrossMark;
+import flash.events.MouseEvent;
 import flash.geom.Point;
 import org.mvcexpress.mvc.Mediator;
 
@@ -33,14 +36,26 @@ public class PlayAreaMediator extends Mediator {
 		view.addChild(cross);
 		
 		addHandler(EngineMsg.BORDER_HIT, handleBorderHit);
+		addHandler(DataMsg.ADD_BLOB, handleAddBlob);
+		
+		view.addEventListener(MouseEvent.CLICK, handlePlayAreaClick);
 	}
 
+	public function handlePlayAreaClick(event:MouseEvent):void {
+		sendMessage(ViewMsg.MAIN_CLICKED, new Point(view.mouseX, view.mouseY));
+	}
+	
 	public function handleBorderHit(hitPoint:Point):void {
 		cross.x = hitPoint.x;
 		cross.y = hitPoint.y;
 	}
 	
-	
+	public function handleAddBlob(addPoint:Point):void {
+		var blob:Blob = new Blob();
+		view.addChild(blob);
+		blob.x = addPoint.x;
+		blob.y = addPoint.y;
+	}	
 	override public function onRemove():void {
 	
 	}

@@ -7,7 +7,6 @@ public class DataMsg {
 	
 	static public const TEST_DATA_CHANGED:String = "testDataChanged";
 	static public const HERO_POS_CHANGED:String = "heroPosChanged";
-	
-	
+	static public const ADD_BLOB:String = "addBlob";
 }
 }

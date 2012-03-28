@@ -1,6 +1,8 @@
 package com.mindScriptAct.liveSample.controler.setup{
+import com.mindScriptAct.liveSample.controler.playArea.HandleMainClickCommand;
 import com.mindScriptAct.liveSample.controler.test.TestCommand;
 import com.mindScriptAct.liveSample.messages.Msg;
+import com.mindScriptAct.liveSample.messages.ViewMsg;
 import org.mvcexpress.mvc.Command;
 	
 /**
@@ -16,6 +18,7 @@ public class SetupControlerCommand extends Command {
 		// map a command to message string.
 		// command class will be executed then messange with that string is sent.
 		commandMap.map(Msg.TEST, TestCommand);
+		commandMap.map(ViewMsg.MAIN_CLICKED, HandleMainClickCommand);
 	}
 	
 }

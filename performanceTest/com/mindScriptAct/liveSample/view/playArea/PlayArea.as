@@ -15,7 +15,6 @@ public class PlayArea extends Sprite {
 		this.graphics.drawRect(0, 0, MainConfig.PLAY_AREA_WIDTH, MainConfig.PLAY_AREA_HEIGHT);
 		this.graphics.endFill();
 		
-		
 	}
 	
 }

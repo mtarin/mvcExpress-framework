@@ -1,6 +1,7 @@
 package com.mindScriptAct.liveSample.controler.setup {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
+import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
 import com.mindScriptAct.liveSample.model.hero.HeroProxy;
 import com.mindScriptAct.liveSample.model.test.TestProxy;
 import flash.geom.Point;
@@ -24,6 +25,8 @@ public class SetupModelCommand extends Command {
 		
 		processMap.injectTo(HeroProcess, HeroProcess.NAME, heroPosition, "heroPosition", heroDirection, "heroDirection");
 		proxyMap.map(new HeroProxy(heroPosition, heroDirection));
+		
+		proxyMap.map(new PlayAreaItemProxy());
 	}
 
 }
