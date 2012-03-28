@@ -2,6 +2,7 @@
 package org.mvcexpress.live {
 import flash.utils.Dictionary;
 import org.mvcexpress.namespace.pureLegsCore;
+import org.mvcexpress.messenger.Messenger;
 
 /**
  * COMMENT
@@ -10,6 +11,9 @@ import org.mvcexpress.namespace.pureLegsCore;
 public class Process {
 	
 	static pureLegsCore var canConstruct:Boolean;
+		
+	/** @private */
+	pureLegsCore var messanger:Messenger;
 	
 	pureLegsCore var isRunning:Boolean = false;
 	
@@ -48,6 +52,15 @@ public class Process {
 	// TODO : add messsage to send stack. Messages will be send then process will finish running. (experimental)
 	protected function addMessageSender():void {
 	
+	}
+	
+	/**
+	 * Sends a message with optional params object.
+	 * @param	type	type of the message for Commands and handle function to react to.
+	 * @param	params	Object that will be passed to Command execute() function and to handle functions.
+	 */
+	protected function sendMessage(type:String, params:Object = null):void {
+		pureLegsCore::messanger.send(type, params);
 	}
 
 }

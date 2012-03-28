@@ -87,6 +87,7 @@ public class ProcessMap implements IProcessMap {
 		use namespace pureLegsCore;
 		Process.canConstruct = true;
 		var process:Process = new processClass() as Process;
+		process.messanger = messenger;
 		Process.canConstruct = false;
 		if (!process) {
 			throw Error("Process creation failed. processClass must extend Procoss class.");

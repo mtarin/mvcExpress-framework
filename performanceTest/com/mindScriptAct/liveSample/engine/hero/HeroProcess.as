@@ -1,5 +1,6 @@
 package com.mindScriptAct.liveSample.engine.hero {
 import com.mindScriptAct.liveSample.constants.MainConfig;
+import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.view.hero.Hero;
 import flash.geom.Point;
 import org.mvcexpress.live.Process;
@@ -26,7 +27,7 @@ public class HeroProcess extends Process {
 	}
 	
 	override public function run(timer:int):void {
-		trace("HeroProcess.run > timer : " + timer);
+		//trace("HeroProcess.run > timer : " + timer +"   "+ (lastRunTime-timer));
 		
 		// move
 		heroPosition.x += heroDirection.x;
@@ -36,20 +37,24 @@ public class HeroProcess extends Process {
 		if (heroPosition.x < 0) {
 			heroPosition.x = -heroPosition.x;
 			heroDirection.x *= -1;
+			sendMessage(EngineMsg.BORDER_HIT, new Point(0, heroPosition.y));
 		}
 		if (heroPosition.x > MainConfig.PLAY_AREA_WIDTH) {
 			var xOver:int = heroPosition.x - MainConfig.PLAY_AREA_WIDTH;
 			heroPosition.x = MainConfig.PLAY_AREA_WIDTH - xOver;
 			heroDirection.x *= -1;
+			sendMessage(EngineMsg.BORDER_HIT, new Point(MainConfig.PLAY_AREA_WIDTH, heroPosition.y));
 		}
 		if (heroPosition.y < 0) {
 			heroPosition.y = -heroPosition.y;
 			heroDirection.y *= -1;
+			sendMessage(EngineMsg.BORDER_HIT, new Point(heroPosition.x, 0));
 		}
 		if (heroPosition.y > MainConfig.PLAY_AREA_HEIGHT) {
 			var yOver:int = heroPosition.y - MainConfig.PLAY_AREA_HEIGHT;
 			heroPosition.y = MainConfig.PLAY_AREA_HEIGHT - yOver;
 			heroDirection.y *= -1;
+			sendMessage(EngineMsg.BORDER_HIT, new Point(heroPosition.x, MainConfig.PLAY_AREA_HEIGHT));
 		}
 		
 		// render
