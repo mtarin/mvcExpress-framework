@@ -1,9 +1,11 @@
 package com.mindScriptAct.liveSample.view.playArea {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
+import com.mindScriptAct.liveSample.engine.areaItem.AreaItemProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
+import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
 import com.mindScriptAct.liveSample.view.hero.Hero;
 import com.mindScriptAct.liveSample.view.playArea.components.Blob;
 import com.mindScriptAct.liveSample.view.playArea.components.CrossMark;
@@ -21,6 +23,9 @@ public class PlayAreaMediator extends Mediator {
 	[Inject]
 	public var view:PlayArea;
 	
+	private var blobs:Vector.<Blob>;
+	
+	
 	//[Inject]
 	//public var myProxy:MyProxy;
 	
@@ -34,6 +39,9 @@ public class PlayAreaMediator extends Mediator {
 		
 		cross = new CrossMark();
 		view.addChild(cross);
+		
+		blobs = new Vector.<Blob>();
+		processMap.injectTo(AreaItemProcess, AreaItemProcess.NAME, blobs);
 		
 		addHandler(EngineMsg.BORDER_HIT, handleBorderHit);
 		addHandler(DataMsg.ADD_BLOB, handleAddBlob);
@@ -52,6 +60,7 @@ public class PlayAreaMediator extends Mediator {
 	
 	public function handleAddBlob(addPoint:Point):void {
 		var blob:Blob = new Blob();
+		blobs.push(blob);
 		view.addChild(blob);
 		blob.x = addPoint.x;
 		blob.y = addPoint.y;

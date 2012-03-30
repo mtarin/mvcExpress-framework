@@ -9,11 +9,11 @@ import org.mvcexpress.mvc.Proxy;
  */
 public class PlayAreaItemProxy extends Proxy {
 	
-	private var blobs:Vector.<BlobVO> = new Vector.<BlobVO>();
+	private var blobs:Vector.<BlobVO>;
 	
 	
-	public function PlayAreaItemProxy() {
-		
+	public function PlayAreaItemProxy(blobs:Vector.<BlobVO>) {
+		this.blobs = blobs;
 	}
 	
 	override protected function onRegister():void {
@@ -26,7 +26,20 @@ public class PlayAreaItemProxy extends Proxy {
 	
 	public function addBlob(blobLocation:Point):void {
 		var blob:BlobVO = new BlobVO();
-		blob.location = blobLocation;
+		blob.position = blobLocation;
+		
+		var dirX:int = 5 + Math.random() * 5;
+		if (Math.random() < 0.5) {
+			dirX *= -1;
+		}
+		var dirY:int = 5 + Math.random() * 5;
+		if (Math.random() < 0.5) {
+			dirY *= -1;
+		}
+		blob.direction = new Point(dirX, dirY);
+		
+		blobs.push(blob);
+		
 		sendMessage(DataMsg.ADD_BLOB, blobLocation);
 	}
 

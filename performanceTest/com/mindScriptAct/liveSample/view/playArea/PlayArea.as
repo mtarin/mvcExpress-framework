@@ -1,5 +1,6 @@
 package com.mindScriptAct.liveSample.view.playArea {
 	import com.mindScriptAct.liveSample.constants.MainConfig;
+	import com.mindScriptAct.liveSample.view.playArea.components.Blob;
 	import flash.display.Sprite;
 	
 /**

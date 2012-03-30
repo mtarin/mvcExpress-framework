@@ -22,8 +22,7 @@ public class HeroProcess extends Process {
 	public var hero:Hero;
 	
 	override public function init():void {
-		trace("HeroProcess.init");
-	
+		//trace("HeroProcess.init");
 	}
 	
 	override public function run(timer:int):void {

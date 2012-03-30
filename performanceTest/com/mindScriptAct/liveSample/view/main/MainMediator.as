@@ -22,8 +22,8 @@ public class MainMediator extends Mediator {
 		var playScreen:PlayArea = new PlayArea();
 		view.addChild(playScreen);
 		mediatorMap.mediate(playScreen);
-		playScreen.x = 50;
-		playScreen.y = 50;
+		playScreen.x = 120;
+		playScreen.y = 120;
 		
 		//var testObj:ViewObject = new ViewObject();
 		//processMap.injectTo(FrameTickerId.RENDER, TestProcess, TestProcess.NAME, testObj);

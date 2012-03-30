@@ -17,7 +17,6 @@ public class InitHeroCommand extends Command {
 		heroProxy.moveHero(MainConfig.PLAY_AREA_WIDTH / 2, MainConfig.PLAY_AREA_HEIGHT / 2);
 		
 		var dirX:int = 5 + Math.random() * 5;
-		
 		if (Math.random() < 0.5) {
 			dirX *= -1;
 		}

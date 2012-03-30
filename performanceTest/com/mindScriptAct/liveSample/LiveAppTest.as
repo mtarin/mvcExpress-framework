@@ -1,6 +1,8 @@
 package com.mindScriptAct.liveSample {
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.events.StatusEvent;
+import utils.debug.Stats;
 
 /**
  */
@@ -23,6 +25,9 @@ public class LiveAppTest extends Sprite {
 		// entry point
 		module = new LiveAppModule();
 		module.start(this);
+		
+		
+		this.addChild(new Stats(1000));
 	}
 }
 }
