@@ -3,6 +3,8 @@ import com.mindScriptAct.liveSample.LiveAppTest;
 import com.mindScriptAct.liveSample.view.hero.Hero;
 import com.mindScriptAct.liveSample.view.hero.HeroMediator;
 import com.mindScriptAct.liveSample.view.main.MainMediator;
+import com.mindScriptAct.liveSample.view.output.OutputContainer;
+import com.mindScriptAct.liveSample.view.output.OutputContainerMediator;
 import com.mindScriptAct.liveSample.view.playArea.PlayArea;
 import com.mindScriptAct.liveSample.view.playArea.PlayAreaMediator;
 import org.mvcexpress.mvc.Command;
@@ -23,6 +25,7 @@ public class SetupViewCommand extends Command {
 		mediatorMap.map(LiveAppTest, MainMediator);
 		mediatorMap.map(PlayArea, PlayAreaMediator);
 		mediatorMap.map(Hero, HeroMediator);
+		mediatorMap.map(OutputContainer, OutputContainerMediator);
 	}
 
 }

@@ -42,6 +42,11 @@ public class PlayAreaItemProxy extends Proxy {
 		
 		sendMessage(DataMsg.ADD_BLOB, blobLocation);
 	}
+	
+	
+	public function getBlobCount():int {
+		return blobs.length;
+	}
 
 }
 }
