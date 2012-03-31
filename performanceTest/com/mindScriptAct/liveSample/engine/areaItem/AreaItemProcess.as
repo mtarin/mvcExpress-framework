@@ -1,10 +1,9 @@
 package com.mindScriptAct.liveSample.engine.areaItem {
-	import com.mindScriptAct.liveSample.constants.MainConfig;
-	import com.mindScriptAct.liveSample.model.areaItems.BlobVO;
-	import com.mindScriptAct.liveSample.model.areaItems.BlobVoList;
-	import com.mindScriptAct.liveSample.view.playArea.components.Blob;
-	import flash.geom.Point;
-	import org.mvcexpress.live.Process;
+import com.mindScriptAct.liveSample.constants.MainConfig;
+import com.mindScriptAct.liveSample.model.areaItems.BlobVO;
+import com.mindScriptAct.liveSample.view.playArea.components.Blob;
+import flash.geom.Point;
+import org.mvcexpress.live.Process;
 	
 	
 /**

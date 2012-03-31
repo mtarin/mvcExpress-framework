@@ -28,7 +28,7 @@ public class LiveAppModule extends ModuleCore {
 		}
 		
 		processMap.initFrameTicker(FrameTickerId.RENDER);
-		processMap.initTimerTicker(TimerTickerId.SPAWNER);
+		processMap.initTimerTicker(TimerTickerId.SPAWNER, 200);
 		
 		
 		// map commands (you can map them here.. or move it to command.)
@@ -62,6 +62,8 @@ public class LiveAppModule extends ModuleCore {
 		
 		
 		processMap.startFrameTicker(FrameTickerId.RENDER);
+		processMap.startTimerTicker(TimerTickerId.SPAWNER);
+		
 	}
 
 }

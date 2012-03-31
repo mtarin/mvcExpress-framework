@@ -2,6 +2,7 @@ package com.mindScriptAct.liveSample.view.playArea {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.areaItem.AreaItemProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
+import com.mindScriptAct.liveSample.engine.itemSwanwer.ItemSpawnProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
@@ -36,6 +37,7 @@ public class PlayAreaMediator extends Mediator {
 		view.addChild(hero);
 		mediatorMap.mediate(hero);
 		processMap.injectTo(HeroProcess, HeroProcess.NAME, hero);
+		processMap.injectTo(ItemSpawnProcess, ItemSpawnProcess.NAME, hero);
 		
 		cross = new CrossMark();
 		view.addChild(cross);

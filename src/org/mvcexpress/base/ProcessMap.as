@@ -5,6 +5,7 @@ import flash.display.MovieClip;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;
 import flash.events.FocusEvent;
+import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.utils.describeType;
 import flash.utils.Dictionary;
@@ -67,15 +68,16 @@ public class ProcessMap implements IProcessMap {
 	/**
 	 *
 	 * @param	tickerName
-	 * @param	frequency
+	 * @param	delay
 	 */
-	public function initTimerTicker(tickerName:String, frequency:int = 100):void {
+	public function initTimerTicker(tickerName:String, delay:int = 100):void {
 		if (timerTickerRegistry[tickerName]) {
 			throw Error("Timer ticker with name" + tickerName + " is already initialized.");
 		}
-		var ticker:TimerTicker = new TimerTicker(tickerName, frequency);
-		timerTickerRegistry[tickerName] = frameTickers.length;
+		var ticker:TimerTicker = new TimerTicker(tickerName, delay);
+		timerTickerRegistry[tickerName] = timerTickers.length;
 		timerTickers.push(ticker);
+		ticker.addEventListener(TimerEvent.TIMER, handleTimerTick);
 	}
 	
 	//----------------------------------
@@ -100,7 +102,18 @@ public class ProcessMap implements IProcessMap {
 	// TODO : consider adding named timer instances.. (to have many of them at same time)
 	public function addTimerProcess(tickerName:String, processClass:Class, processName:String):void {
 		trace("ProcessMap.addTimerProcess > processClass : " + processClass + ", processName  : " + processName);
-	
+		// get ticker
+		if (timerTickerRegistry[tickerName] == null) {
+			throw Error("There is no initialized timer ticker with name:" + tickerName);
+		}
+		var ticker:TimerTicker = timerTickers[timerTickerRegistry[tickerName]];
+		// get process
+		var className:String = getQualifiedClassName(processClass);
+		var process:Process = processRegistry[className + processName] as Process;
+		if (!process) {
+			process = createProcess(processClass, processName);
+		}
+		ticker.processes.push(process);
 	}
 	
 	// TODO : consider adding named EnterFrame instances.. (to have many of them at same time)
@@ -170,9 +183,40 @@ public class ProcessMap implements IProcessMap {
 	//    timer funcions 
 	//----------------------------------
 	
-	public function startTimer():void {
+	public function startTimerTicker(tickerName:String):void {
 		//trace("ProcessMap.startTimer");
+		// get ticker
+		if (timerTickerRegistry[tickerName] == null) {
+			throw Error("There is no initialized timer ticker with name:" + tickerName);
+		}
+		var ticker:TimerTicker = timerTickers[timerTickerRegistry[tickerName]];
+		
+		if (!ticker.running) {
+			use namespace pureLegsCore;
+			var processes:Vector.<Process> = ticker.processes;
+			for (var i:int = 0; i < processes.length; i++) {
+				if (!processes[i].isInited) {
+					// handle injections.
+					initInjections(processes[i]);
+					// init
+					processes[i].init();
+					processes[i].isInited = true;
+				}
+			}
+			//
+			ticker.start();
+		} else {
+			throw Error("Timer ticker with name :" + tickerName + " is already started.");
+		}
+	}
 	
+	
+	private function handleTimerTick(event:TimerEvent):void {
+		var ticker:TimerTicker = event.target as TimerTicker;
+		for (var i:int = 0; i < ticker.processes.length; i++) {
+			// TODO : add parameter timer, and lastRunTime
+			ticker.processes[i].run(0);
+		}
 	}
 	
 	public function stopTimer():void {
@@ -312,20 +356,20 @@ public class ProcessMap implements IProcessMap {
 	}
 }
 }
+import flash.utils.Timer;
 import org.mvcexpress.live.Process;
 
 //----------------------------------
 //     private ticker classes
 //----------------------------------
 
-class TimerTicker {
+class TimerTicker extends Timer {
 	public var tickerName:String;
-	public var frequency:int;
+	public var processes:Vector.<Process> = new Vector.<Process>();
 	
-	function TimerTicker(tickerName:String, frequency:int) {
+	function TimerTicker(tickerName:String, delay:int) {
 		this.tickerName = tickerName;
-		this.frequency = frequency;
-	
+		super(delay);
 	}
 }
 
