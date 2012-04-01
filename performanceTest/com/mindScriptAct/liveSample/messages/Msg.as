@@ -6,6 +6,7 @@ package com.mindScriptAct.liveSample.messages {
 public class Msg {
 	
 	static public const TEST:String = "test";
+	static public const ADD_HERO:String = "addHero";
 	
 	
 }

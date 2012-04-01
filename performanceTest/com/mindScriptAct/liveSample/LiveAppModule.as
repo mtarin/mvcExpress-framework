@@ -1,11 +1,12 @@
 package com.mindScriptAct.liveSample {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
+import com.mindScriptAct.liveSample.constants.MainConfig;
 import com.mindScriptAct.liveSample.constants.TimerTickerId;
-import com.mindScriptAct.liveSample.controler.hero.InitHeroCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupControlerCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupEngineCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupModelCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupViewCommand;
+import com.mindScriptAct.liveSample.controler.test.TestCommand;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.Msg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
@@ -40,7 +41,9 @@ public class LiveAppModule extends ModuleCore {
 		// map mediators(you can map them here.. or move it to command.)
 		commandMap.execute(SetupViewCommand);
 		
-		commandMap.execute(SetupEngineCommand)
+		commandMap.execute(SetupEngineCommand);
+		
+		
 		
 	}
 	
@@ -58,12 +61,12 @@ public class LiveAppModule extends ModuleCore {
 		
 		trace("Hello mvcExpress!!!");
 		
-		commandMap.execute(InitHeroCommand);
-		
-		
 		processMap.startFrameTicker(FrameTickerId.RENDER);
 		processMap.startTimerTicker(TimerTickerId.SPAWNER);
 		
+		
+		commandMap.execute(TestCommand);
+
 	}
 
 }

@@ -4,7 +4,7 @@ package com.mindScriptAct.liveSample.view.playArea.components {
 	
 /**
  * COMMENT
- * @author Object
+ * @author Raimundas Banevicius (raima156@yahoo.com)
  */
 public class CrossMark extends Shape {
 	

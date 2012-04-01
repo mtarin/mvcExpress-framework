@@ -1,14 +1,17 @@
 package com.mindScriptAct.liveSample.view.playArea {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
-import com.mindScriptAct.liveSample.engine.areaItem.AreaItemProcess;
+import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
+import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.engine.itemSwanwer.ItemSpawnProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
+import com.mindScriptAct.liveSample.messages.Msg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
 import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
 import com.mindScriptAct.liveSample.view.hero.Hero;
 import com.mindScriptAct.liveSample.view.playArea.components.Blob;
+import com.mindScriptAct.liveSample.view.playArea.components.Brick;
 import com.mindScriptAct.liveSample.view.playArea.components.CrossMark;
 import flash.events.MouseEvent;
 import flash.geom.Point;
@@ -26,6 +29,7 @@ public class PlayAreaMediator extends Mediator {
 	
 	private var blobs:Vector.<Blob>;
 	
+	private var bricks:Vector.<Brick>;
 	
 	//[Inject]
 	//public var myProxy:MyProxy;
@@ -34,7 +38,7 @@ public class PlayAreaMediator extends Mediator {
 	
 	override public function onRegister():void {
 		hero = new Hero();
-		view.addChild(hero);
+		
 		mediatorMap.mediate(hero);
 		processMap.injectTo(HeroProcess, HeroProcess.NAME, hero);
 		processMap.injectTo(ItemSpawnProcess, ItemSpawnProcess.NAME, hero);
@@ -43,14 +47,25 @@ public class PlayAreaMediator extends Mediator {
 		view.addChild(cross);
 		
 		blobs = new Vector.<Blob>();
-		processMap.injectTo(AreaItemProcess, AreaItemProcess.NAME, blobs);
+		processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, blobs);
+		
+		bricks = new Vector.<Brick>();
+		processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
 		
 		addHandler(EngineMsg.BORDER_HIT, handleBorderHit);
 		addHandler(DataMsg.ADD_BLOB, handleAddBlob);
+		addHandler(DataMsg.ADD_BRICK, handleAddBrick);
 		
 		view.addEventListener(MouseEvent.CLICK, handlePlayAreaClick);
+		
+		addHandler(Msg.ADD_HERO, handleAddHero);
 	}
-
+	
+	private function handleAddHero(blank:Object):void {
+		view.addChild(hero);
+		removeHandler(Msg.ADD_HERO, handleAddHero);
+	}
+	
 	public function handlePlayAreaClick(event:MouseEvent):void {
 		sendMessage(ViewMsg.MAIN_CLICKED, new Point(view.mouseX, view.mouseY));
 	}
@@ -66,7 +81,16 @@ public class PlayAreaMediator extends Mediator {
 		view.addChild(blob);
 		blob.x = addPoint.x;
 		blob.y = addPoint.y;
-	}	
+	}
+	
+	public function handleAddBrick(addPoint:Point):void {
+		var brick:Brick = new Brick();
+		bricks.push(brick);
+		view.addChild(brick);
+		brick.x = addPoint.x;
+		brick.y = addPoint.y;
+	}
+	
 	override public function onRemove():void {
 	
 	}

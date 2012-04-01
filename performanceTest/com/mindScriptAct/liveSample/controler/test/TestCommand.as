@@ -1,27 +1,49 @@
 package com.mindScriptAct.liveSample.controler.test {
+import com.mindScriptAct.liveSample.constants.MainConfig;
+import com.mindScriptAct.liveSample.messages.Msg;
+import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
+import com.mindScriptAct.liveSample.model.hero.HeroProxy;
 import com.mindScriptAct.liveSample.model.test.TestProxy;
 import flash.geom.Point;
 import org.mvcexpress.mvc.Command;
-	
+
 /**
  * Test command to show execution.
  */
-public class TestCommand extends Command{
+public class TestCommand extends Command {
 	
-	// Get your proxies using injection to work with your data.
-	// Proxy must be mapped first to be injected.
 	[Inject]
-	public var testProxy:TestProxy;
+	public var playAreaItemProxy:PlayAreaItemProxy;
 	
-	// function that will be executed then you send message that is maped to execute this command.
-	// ...OR you can execute command dicertly with commandMap.execute(TestCommand, new Point(1, 5)); )
-	// it is important to rememeber that execute() function MUST have one and only one parameter. If you dont need command to get parametrs, put "blank:Object" as parameter)
+	[Inject]
+	public var heroProxy:HeroProxy;
+	
 	public function execute(testData:Point):void {
-		trace( "TestCommand.execute > testData : " + testData );
+		// add bricks..
 		
-		// in command you most likely get and set your data.
-		testProxy.setTestData("Command changed data!");
+		var quarterWidth:int = MainConfig.PLAY_AREA_WIDTH / 4;
+		var quarterHeight:int = MainConfig.PLAY_AREA_HEIGHT / 4;
+		
+		playAreaItemProxy.addBrick(new Point(quarterWidth * 1, quarterHeight * 1));
+		playAreaItemProxy.addBrick(new Point(quarterWidth * 1, quarterHeight * 3));
+		playAreaItemProxy.addBrick(new Point(quarterWidth * 3, quarterHeight * 1));
+		playAreaItemProxy.addBrick(new Point(quarterWidth * 3, quarterHeight * 3));
+		
+		// hero
+		heroProxy.moveHero(MainConfig.PLAY_AREA_WIDTH / 2, MainConfig.PLAY_AREA_HEIGHT / 2);
+		
+		var dirX:int = 5 + Math.random() * 5;
+		if (Math.random() < 0.5) {
+			dirX *= -1;
+		}
+		var dirY:int = 5 + Math.random() * 5;
+		if (Math.random() < 0.5) {
+			dirY *= -1;
+		}
+		heroProxy.setHeroDirection(dirX, dirY);
+		
+		sendMessage(Msg.ADD_HERO);
 	}
-	
+
 }
 }

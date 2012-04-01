@@ -10,8 +10,8 @@ import org.mvcexpress.live.Process;
  * COMMENT
  * @author Raimundas Banevicius
  */
-public class AreaItemProcess extends Process {
-	static public const NAME:String = "AreaItemProcess";
+public class BlobItemProcess extends Process {
+	static public const NAME:String = "BlobItemProcess";
 	
 	
 	[Inject]
@@ -23,10 +23,6 @@ public class AreaItemProcess extends Process {
 	
 	//[Inject]
 	//public var blobVoList:BlobVoList;
-	
-	
-	public function AreaItemProcess() {
-	}
 	
 	override public function init():void {
 		trace( "AreaItemProcess.init" );

@@ -1,8 +1,10 @@
 package com.mindScriptAct.liveSample.controler.setup {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
-import com.mindScriptAct.liveSample.engine.areaItem.AreaItemProcess;
+import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
+import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.model.areaItems.BlobVO;
+import com.mindScriptAct.liveSample.model.areaItems.BrickVO;
 import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
 import com.mindScriptAct.liveSample.model.hero.HeroProxy;
 import com.mindScriptAct.liveSample.model.test.TestProxy;
@@ -18,7 +20,7 @@ import org.mvcexpress.mvc.Command;
 public class SetupModelCommand extends Command {
 	
 	public function execute(blank:Object):void {
-		trace( "SetupModelCommand.execute > blank : " + blank);
+		trace("SetupModelCommand.execute > blank : " + blank);
 		
 		proxyMap.map(new TestProxy());
 		
@@ -28,12 +30,14 @@ public class SetupModelCommand extends Command {
 		processMap.injectTo(HeroProcess, HeroProcess.NAME, heroPosition, "heroPosition", heroDirection, "heroDirection");
 		proxyMap.map(new HeroProxy(heroPosition, heroDirection));
 		
-		
 		var blobs:Vector.<BlobVO> = new Vector.<BlobVO>();
+		processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, blobs);
 		
-		processMap.injectTo(AreaItemProcess, AreaItemProcess.NAME, blobs);
-		proxyMap.map(new PlayAreaItemProxy(blobs));
+		var bricks:Vector.<BrickVO> = new Vector.<BrickVO>();
+		processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
+		
+		proxyMap.map(new PlayAreaItemProxy(blobs, bricks));
+	
 	}
-
 }
 }
