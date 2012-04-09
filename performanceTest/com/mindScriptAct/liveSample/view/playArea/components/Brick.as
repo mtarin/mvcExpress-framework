@@ -10,7 +10,7 @@ public class Brick extends Sprite {
 	
 	public function Brick() {
 		this.graphics.lineStyle(0.1, 0x000000);
-		this.graphics.beginFill(0xFF00FF);
+		this.graphics.beginFill(0xFFFF00);
 		this.graphics.drawRect(-MainConfig.BRICK_SIZE / 2, -MainConfig.BRICK_SIZE / 2, MainConfig.BRICK_SIZE, MainConfig.BRICK_SIZE);
 		this.graphics.endFill();
 	}

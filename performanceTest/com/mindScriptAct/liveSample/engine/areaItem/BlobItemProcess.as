@@ -1,5 +1,6 @@
 package com.mindScriptAct.liveSample.engine.areaItem {
 import com.mindScriptAct.liveSample.constants.MainConfig;
+import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.model.areaItems.BlobVO;
 import com.mindScriptAct.liveSample.model.areaItems.BrickVO;
 import com.mindScriptAct.liveSample.view.playArea.components.Blob;
@@ -69,6 +70,8 @@ public class BlobItemProcess extends Process {
 			for (var j:int = 0; j < bricksData.length; j++) {
 				var nextBrickVo:BrickVO = bricksData[j];
 				
+				var redrawDamage:Boolean = false;
+				
 				var left1:int = blobVo.position.x - blobVo.radius;
 				var left2:int = nextBrickVo.position.x - nextBrickVo.radius;
 				var right1:int = blobVo.position.x + blobVo.radius;
@@ -89,19 +92,23 @@ public class BlobItemProcess extends Process {
 							if (right1 > left2) {
 								if (blobVo.direction.x > 0) {
 									blobVo.direction.x *= -1;
+									blobVo.damagePoints++;
+									redrawDamage = true;
 								}
-								//if (nextBrickVo.direction.x < 0) {
+									//if (nextBrickVo.direction.x < 0) {
 									//nextBrickVo.direction.x *= -1;
-								//}
+									//}
 							}
 						} else {
 							if (left1 < right2) {
 								if (blobVo.direction.x < 0) {
 									blobVo.direction.x *= -1;
+									blobVo.damagePoints++;
+									redrawDamage = true;
 								}
-								//if (nextBrickVo.direction.x > 0) {
+									//if (nextBrickVo.direction.x > 0) {
 									//nextBrickVo.direction.x *= -1;
-								//}
+									//}
 							}
 						}
 					} else {
@@ -109,21 +116,34 @@ public class BlobItemProcess extends Process {
 							if (bottom1 > top2) {
 								if (blobVo.direction.y > 0) {
 									blobVo.direction.y *= -1;
+									blobVo.damagePoints++;
+									redrawDamage = true;
 								}
-								//if (nextBrickVo.direction.y < 0) {
+									//if (nextBrickVo.direction.y < 0) {
 									//nextBrickVo.direction.y *= -1;
-								//}
+									//}
 							}
 						} else {
 							if (top1 < bottom2) {
 								if (blobVo.direction.y < 0) {
 									blobVo.direction.y *= -1;
+									blobVo.damagePoints++;
+									redrawDamage = true;
 								}
-								//if (nextBrickVo.direction.y > 0) {
+									//if (nextBrickVo.direction.y > 0) {
 									//nextBrickVo.direction.y *= -1;
-								//}
+									//}
 							}
 						}
+					}
+				}
+				
+				if (redrawDamage) {
+					var damageRatio:Number = blobVo.damagePoints / blobVo.totalLife;
+					if (damageRatio >= 1) {
+						sendPostMessage(EngineMsg.DESTROY_BLOB, blobVo.id);
+					} else {
+						blobsView[i].setColor(damageRatio, 0, 1 - damageRatio);
 					}
 				}
 			}
@@ -134,6 +154,8 @@ public class BlobItemProcess extends Process {
 			
 		}
 	}
+	
+
 	
 	override public function dispose():void {
 	

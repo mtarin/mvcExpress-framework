@@ -1,5 +1,6 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.live {
+import com.adobe.ac.util.service.ILocalConnection;
 import flash.utils.Dictionary;
 import org.mvcexpress.namespace.pureLegsCore;
 import org.mvcexpress.messenger.Messenger;
@@ -11,7 +12,7 @@ import org.mvcexpress.messenger.Messenger;
 public class Process {
 	
 	static pureLegsCore var canConstruct:Boolean;
-		
+	
 	/** @private */
 	pureLegsCore var messanger:Messenger;
 	
@@ -22,6 +23,9 @@ public class Process {
 	pureLegsCore var injects:Dictionary = new Dictionary();
 	
 	pureLegsCore var injectCount:int = 0;
+	
+	pureLegsCore var postMessageTypes:Vector.<String> = new Vector.<String>();
+	pureLegsCore var postMessageParams:Vector.<Object> = new Vector.<Object>();
 	
 	public var lastRunTime:int = 0;
 	
@@ -60,7 +64,21 @@ public class Process {
 	 * @param	params	Object that will be passed to Command execute() function and to handle functions.
 	 */
 	protected function sendMessage(type:String, params:Object = null):void {
-		pureLegsCore::messanger.send(type, params);
+		use namespace pureLegsCore;
+		messanger.send(type, params);
+	}
+	
+	protected function sendPostMessage(type:String, params:Object = null):void {
+		use namespace pureLegsCore;
+		postMessageTypes.push(type);
+		postMessageParams.push(params);
+	}
+	
+	pureLegsCore function postSend():void {
+		use namespace pureLegsCore;
+		while (postMessageTypes.length) {
+			messanger.send(postMessageTypes.pop(), postMessageParams.pop());
+		}
 	}
 
 }

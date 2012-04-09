@@ -9,5 +9,6 @@ public class DataMsg {
 	static public const HERO_POS_CHANGED:String = "heroPosChanged";
 	static public const ADD_BLOB:String = "addBlob";
 	static public const ADD_BRICK:String = "addBrick";
+	static public const REMOVE_BLOB:String = "removeBlob";
 }
 }

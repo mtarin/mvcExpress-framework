@@ -11,7 +11,6 @@ import org.mvcexpress.mvc.Proxy;
 public class PlayAreaItemProxy extends Proxy {
 	
 	private var blobs:Vector.<BlobVO>;
-	
 	private var bricks:Vector.<BrickVO>;
 	
 	public function PlayAreaItemProxy(blobs:Vector.<BlobVO>, bricks:Vector.<BrickVO>) {
@@ -42,9 +41,15 @@ public class PlayAreaItemProxy extends Proxy {
 		}
 		blobVo.direction = new Point(dirX, dirY);
 		
+		blobVo.damagePoints = 0;
+		blobVo.totalLife = MainConfig.BLOB_LIFE;
+
+		blobVo.id = BlobVO.BLOB_COUNT++;
+		
 		blobs.push(blobVo);
 		
-		sendMessage(DataMsg.ADD_BLOB, position);
+		
+		sendMessage(DataMsg.ADD_BLOB, blobVo);
 	}
 	
 	public function addBrick(position:Point):void {
@@ -70,6 +75,16 @@ public class PlayAreaItemProxy extends Proxy {
 	
 	public function getBlobCount():int {
 		return blobs.length;
+	}
+	
+	public function removeBlob(blobId:int):void {
+		for (var i:int = 0; i < blobs.length; i++) {
+			if (blobs[i].id == blobId) {
+				blobs.splice(i, 1);
+				sendMessage(DataMsg.REMOVE_BLOB, blobId);
+				break;
+			}
+		}
 	}
 
 }

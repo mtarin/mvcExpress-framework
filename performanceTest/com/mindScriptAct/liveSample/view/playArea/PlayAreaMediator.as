@@ -8,6 +8,7 @@ import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.messages.Msg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
+import com.mindScriptAct.liveSample.model.areaItems.BlobVO;
 import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
 import com.mindScriptAct.liveSample.view.hero.Hero;
 import com.mindScriptAct.liveSample.view.playArea.components.Blob;
@@ -54,11 +55,22 @@ public class PlayAreaMediator extends Mediator {
 		
 		addHandler(EngineMsg.BORDER_HIT, handleBorderHit);
 		addHandler(DataMsg.ADD_BLOB, handleAddBlob);
+		addHandler(DataMsg.REMOVE_BLOB, handleRemoveBlob);
 		addHandler(DataMsg.ADD_BRICK, handleAddBrick);
 		
 		view.addEventListener(MouseEvent.CLICK, handlePlayAreaClick);
 		
 		addHandler(Msg.ADD_HERO, handleAddHero);
+	}
+	
+	public function handleRemoveBlob(blobId:int):void {
+		for (var i:int = 0; i < blobs.length; i++) {
+			if (blobs[i].id == blobId) {
+				view.removeChild(blobs[i]);
+				blobs.splice(i, 1);
+				break;
+			}
+		}
 	}
 	
 	private function handleAddHero(blank:Object):void {
@@ -75,12 +87,13 @@ public class PlayAreaMediator extends Mediator {
 		cross.y = hitPoint.y;
 	}
 	
-	public function handleAddBlob(addPoint:Point):void {
+	public function handleAddBlob(blobVo:BlobVO):void {
 		var blob:Blob = new Blob();
+		blob.id =  blobVo.id;
 		blobs.push(blob);
 		view.addChild(blob);
-		blob.x = addPoint.x;
-		blob.y = addPoint.y;
+		blob.x = blobVo.position.x;
+		blob.y = blobVo.position.y;
 	}
 	
 	public function handleAddBrick(addPoint:Point):void {

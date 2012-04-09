@@ -10,7 +10,7 @@ public class Hero extends Sprite {
 	public function Hero() {
 		
 		this.graphics.lineStyle(0.1, 0xFF0000);
-		this.graphics.beginFill(0xFF8000);
+		this.graphics.beginFill(0x00FF00);
 		this.graphics.drawCircle(0, 0, 20);
 		this.graphics.endFill();
 	}

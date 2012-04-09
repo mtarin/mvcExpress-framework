@@ -274,11 +274,13 @@ public class ProcessMap implements IProcessMap {
 	
 	private function handleFrameTick(event:Event):void {
 		//trace("ProcessMap.handleFrameTick > event : " + event);
+		use namespace pureLegsCore;
 		var runTime:int = getTimer();
 		for (var t:int = 0; t < runningFrameTickers.length; t++) {
 			var processes:Vector.<Process> = runningFrameTickers[t].processes;
 			for (var p:int = 0; p < processes.length; p++) {
 				processes[p].run(runTime);
+				processes[p].postSend();
 				processes[p].lastRunTime = runTime;
 			}
 		}

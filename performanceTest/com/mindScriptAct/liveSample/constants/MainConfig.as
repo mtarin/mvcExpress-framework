@@ -10,6 +10,8 @@ public class MainConfig {
 	
 	 static public const BLOB_SIZE:int = 10;
 	 static public const BRICK_SIZE:int = 100;
+	 
+	 static public const BLOB_LIFE:int = 100;
 
 }
 }

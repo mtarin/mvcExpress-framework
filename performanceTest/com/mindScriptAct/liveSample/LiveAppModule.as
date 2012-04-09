@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample {
+import com.allurent.coverage.runtime.AbstractCoverageAgent;
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.constants.MainConfig;
 import com.mindScriptAct.liveSample.constants.TimerTickerId;
@@ -8,6 +9,7 @@ import com.mindScriptAct.liveSample.controler.setup.SetupModelCommand;
 import com.mindScriptAct.liveSample.controler.setup.SetupViewCommand;
 import com.mindScriptAct.liveSample.controler.test.TestCommand;
 import com.mindScriptAct.liveSample.messages.DataMsg;
+import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.messages.Msg;
 import com.mindScriptAct.liveSample.messages.ViewMsg;
 import flash.geom.Point;
@@ -25,12 +27,11 @@ public class LiveAppModule extends ModuleCore {
 		
 		// little utility to prevent accidental message constant dublications.
 		CONFIG::debug {
-			checkClassStringConstants(Msg, DataMsg, ViewMsg);
+			checkClassStringConstants(Msg, DataMsg, ViewMsg, EngineMsg);
 		}
 		
 		processMap.initFrameTicker(FrameTickerId.RENDER);
 		processMap.initTimerTicker(TimerTickerId.SPAWNER, 200);
-		
 		
 		// map commands (you can map them here.. or move it to command.)
 		commandMap.execute(SetupControlerCommand);
@@ -42,9 +43,7 @@ public class LiveAppModule extends ModuleCore {
 		commandMap.execute(SetupViewCommand);
 		
 		commandMap.execute(SetupEngineCommand);
-		
-		
-		
+	
 	}
 	
 	public function start(main:LiveAppTest):void {
@@ -64,9 +63,8 @@ public class LiveAppModule extends ModuleCore {
 		processMap.startFrameTicker(FrameTickerId.RENDER);
 		processMap.startTimerTicker(TimerTickerId.SPAWNER);
 		
-		
 		commandMap.execute(TestCommand);
-
+	
 	}
 
 }
