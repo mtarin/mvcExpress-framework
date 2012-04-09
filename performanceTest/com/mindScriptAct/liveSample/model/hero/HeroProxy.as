@@ -9,24 +9,25 @@ import org.mvcexpress.mvc.Proxy;
  */
 public class HeroProxy extends Proxy{
 	
-	private var heroPosition:Point = new Point();
-	private var heroDirection:Point = new Point();
+	public var size:int;
+	private var position:Point = new Point();
+	private var direction:Point = new Point();
 	
 	
 	public function HeroProxy(heroPosition:Point, heroDirection:Point){
-		this.heroPosition = heroPosition;
-		this.heroDirection = heroDirection;
+		this.position = heroPosition;
+		this.direction = heroDirection;
 	}
 	
 	public function moveHero(posX:int, posY:int):void {
-		heroPosition.x = posX;
-		heroPosition.y = posY;
-		sendMessage(DataMsg.HERO_POS_CHANGED, heroPosition);
+		position.x = posX;
+		position.y = posY;
+		sendMessage(DataMsg.HERO_POS_CHANGED, position);
 	}
 	
 	public function setHeroDirection(dirX:int, dirY:int):void {
-		heroDirection.x = dirX;
-		heroDirection.y = dirY;
+		direction.x = dirX;
+		direction.y = dirY;
 		// ???
 	}
 	

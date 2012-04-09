@@ -3,7 +3,7 @@ import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
 import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
-import com.mindScriptAct.liveSample.engine.itemSwanwer.ItemSpawnProcess;
+import com.mindScriptAct.liveSample.engine.itemSpanwer.ItemSpawnProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.messages.Msg;

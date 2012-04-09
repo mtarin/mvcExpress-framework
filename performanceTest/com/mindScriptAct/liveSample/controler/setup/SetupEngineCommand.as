@@ -5,7 +5,7 @@ import com.mindScriptAct.liveSample.constants.TimerTickerId;
 import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
 import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
-import com.mindScriptAct.liveSample.engine.itemSwanwer.ItemSpawnProcess;
+import com.mindScriptAct.liveSample.engine.itemSpanwer.ItemSpawnProcess;
 import com.mindScriptAct.liveSample.engine.test.TestProcess;
 import com.mindScriptAct.liveSample.engine.test.TestVO;
 

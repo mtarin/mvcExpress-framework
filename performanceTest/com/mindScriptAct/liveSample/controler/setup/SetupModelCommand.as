@@ -35,6 +35,7 @@ public class SetupModelCommand extends Command {
 		
 		var bricks:Vector.<BrickVO> = new Vector.<BrickVO>();
 		processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
+		processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, bricks);
 		
 		proxyMap.map(new PlayAreaItemProxy(blobs, bricks));
 	

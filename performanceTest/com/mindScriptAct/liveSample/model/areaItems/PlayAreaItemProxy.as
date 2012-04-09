@@ -1,4 +1,5 @@
 package com.mindScriptAct.liveSample.model.areaItems {
+import com.mindScriptAct.liveSample.constants.MainConfig;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import flash.geom.Point;
 import org.mvcexpress.mvc.Proxy;
@@ -29,12 +30,13 @@ public class PlayAreaItemProxy extends Proxy {
 	public function addBlob(position:Point):void {
 		var blobVo:BlobVO = new BlobVO();
 		blobVo.position = position;
+		blobVo.radius = MainConfig.BLOB_SIZE / 2;
 		
-		var dirX:int = 5 + Math.random() * 5;
+		var dirX:int = 6 + Math.random() * 6;
 		if (Math.random() < 0.5) {
 			dirX *= -1;
 		}
-		var dirY:int = 5 + Math.random() * 5;
+		var dirY:int = 6 + Math.random() * 6;
 		if (Math.random() < 0.5) {
 			dirY *= -1;
 		}
@@ -48,15 +50,17 @@ public class PlayAreaItemProxy extends Proxy {
 	public function addBrick(position:Point):void {
 		var brickVo:BrickVO = new BrickVO();
 		brickVo.position = position;
+		brickVo.radius = MainConfig.BRICK_SIZE / 2;
 		
-		var dirX:int = 5 + Math.random() * 5;
+		var dirX:int = 3 + Math.random() * 3;
 		if (Math.random() < 0.5) {
 			dirX *= -1;
 		}
-		var dirY:int = 5 + Math.random() * 5;
+		var dirY:int = 3 + Math.random() * 3;
 		if (Math.random() < 0.5) {
 			dirY *= -1;
 		}
+		
 		brickVo.direction = new Point(dirX, dirY);
 		
 		bricks.push(brickVo);

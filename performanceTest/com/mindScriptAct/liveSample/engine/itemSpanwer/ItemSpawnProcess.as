@@ -1,4 +1,4 @@
-package com.mindScriptAct.liveSample.engine.itemSwanwer {
+package com.mindScriptAct.liveSample.engine.itemSpanwer {
 	import com.mindScriptAct.liveSample.messages.ViewMsg;
 	import com.mindScriptAct.liveSample.view.hero.Hero;
 	import flash.geom.Point;

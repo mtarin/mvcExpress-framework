@@ -7,6 +7,7 @@ package com.mindScriptAct.liveSample.model.areaItems {
  */
 public class BlobVO {
 	
+	public var radius:int;
 	public var position:Point;
 	public var direction:Point;
 	
