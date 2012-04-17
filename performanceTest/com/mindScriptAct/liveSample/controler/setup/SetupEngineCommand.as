@@ -4,6 +4,7 @@ import com.mindScriptAct.liveSample.constants.FrameTickerId;
 import com.mindScriptAct.liveSample.constants.TimerTickerId;
 import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
 import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
+import com.mindScriptAct.liveSample.engine.areaItem.PingAnimProcess;
 import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.engine.itemSpanwer.ItemSpawnProcess;
 import com.mindScriptAct.liveSample.engine.test.TestProcess;
@@ -52,8 +53,10 @@ public class SetupEngineCommand extends Command {
 		processMap.addFrameProcess(FrameTickerId.RENDER, HeroProcess, HeroProcess.NAME);
 		processMap.addFrameProcess(FrameTickerId.RENDER, BlobItemProcess, BlobItemProcess.NAME);
 		processMap.addFrameProcess(FrameTickerId.RENDER, BrickItemProcess, BrickItemProcess.NAME);
+		processMap.addFrameProcess(FrameTickerId.RENDER, PingAnimProcess, PingAnimProcess.NAME);
 		
 		processMap.addTimerProcess(TimerTickerId.SPAWNER, ItemSpawnProcess, ItemSpawnProcess.NAME);
+		
 	
 	}
 
