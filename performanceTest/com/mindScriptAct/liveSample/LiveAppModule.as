@@ -30,8 +30,8 @@ public class LiveAppModule extends ModuleCore {
 			checkClassStringConstants(Msg, DataMsg, ViewMsg, EngineMsg);
 		}
 		
-		processMap.initFrameTicker(FrameTickerId.RENDER);
-		processMap.initTimerTicker(TimerTickerId.SPAWNER, 200);
+		//processMap.initFrameTicker(FrameTickerId.RENDER);
+		//processMap.initTimerTicker(TimerTickerId.SPAWNER, 200);
 		
 		// map commands (you can map them here.. or move it to command.)
 		commandMap.execute(SetupControlerCommand);
@@ -60,8 +60,8 @@ public class LiveAppModule extends ModuleCore {
 		
 		trace("Hello mvcExpress!!!");
 		
-		processMap.startFrameTicker(FrameTickerId.RENDER);
-		processMap.startTimerTicker(TimerTickerId.SPAWNER);
+		//processMap.startFrameTicker(FrameTickerId.RENDER);
+		//processMap.startTimerTicker(TimerTickerId.SPAWNER);
 		
 		commandMap.execute(TestCommand);
 	

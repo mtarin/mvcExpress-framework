@@ -1,10 +1,10 @@
 package com.mindScriptAct.liveSample.view.playArea {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
-import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
-import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
-import com.mindScriptAct.liveSample.engine.areaItem.PingAnimProcess;
-import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
-import com.mindScriptAct.liveSample.engine.itemSpanwer.ItemSpawnProcess;
+//import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
+//import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
+//import com.mindScriptAct.liveSample.engine.areaItem.PingAnimProcess;
+//import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
+//import com.mindScriptAct.liveSample.engine.itemSpanwer.ItemSpawnProcess;
 import com.mindScriptAct.liveSample.messages.DataMsg;
 import com.mindScriptAct.liveSample.messages.EngineMsg;
 import com.mindScriptAct.liveSample.messages.Msg;
@@ -46,23 +46,23 @@ public class PlayAreaMediator extends Mediator {
 		hero = new Hero();
 		
 		mediatorMap.mediate(hero);
-		processMap.injectTo(HeroProcess, HeroProcess.NAME, hero);
-		processMap.injectTo(ItemSpawnProcess, ItemSpawnProcess.NAME, hero);
+		//processMap.injectTo(HeroProcess, HeroProcess.NAME, hero);
+		//processMap.injectTo(ItemSpawnProcess, ItemSpawnProcess.NAME, hero);
 		
 		cross = new CrossMark();
 		view.addChild(cross);
 		
 		blobs = new Vector.<Blob>();
-		processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, blobs);
+		//processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, blobs);
 		
 		bricks = new Vector.<Brick>();
-		processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
+		//processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
 		
 		increasePings = new Vector.<PingCircle>();
-		processMap.injectTo(PingAnimProcess, PingAnimProcess.NAME, increasePings, "increasePings");
+		//processMap.injectTo(PingAnimProcess, PingAnimProcess.NAME, increasePings, "increasePings");
 		
 		decreasePings = new Vector.<PingCircle>();
-		processMap.injectTo(PingAnimProcess, PingAnimProcess.NAME, decreasePings, "decreasePings");
+		//processMap.injectTo(PingAnimProcess, PingAnimProcess.NAME, decreasePings, "decreasePings");
 		
 		idlePings = new Vector.<PingCircle>();
 		

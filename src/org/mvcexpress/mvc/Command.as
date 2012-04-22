@@ -2,7 +2,6 @@
 package org.mvcexpress.mvc {
 import org.mvcexpress.base.CommandMap;
 import org.mvcexpress.base.MediatorMap;
-import org.mvcexpress.base.ProcessMap;
 import org.mvcexpress.base.ProxyMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
@@ -17,7 +16,6 @@ import org.mvcexpress.namespace.pureLegsCore;
 dynamic public class Command {
 	
 	public var commandMap:CommandMap;
-	public var processMap:ProcessMap;
 	public var mediatorMap:MediatorMap;
 	public var proxyMap:ProxyMap;
 	
@@ -31,7 +29,7 @@ dynamic public class Command {
 	public function Command() {
 		CONFIG::debug {
 			if (!pureLegsCore::canConstruct) {
-				throw Error("Command "+this+" can be constructed only by framework. If you want to execute it - map it to message with commandMap.map(), or execute it dirrectly with commandMap.execute()")
+				throw Error("Command:"+this+" can be constructed only by framework. If you want to execute it - map it to message with commandMap.map(), or execute it dirrectly with commandMap.execute()")
 			}
 		}
 	}

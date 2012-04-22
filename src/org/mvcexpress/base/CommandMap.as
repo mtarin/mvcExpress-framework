@@ -7,6 +7,7 @@ import flash.utils.getQualifiedClassName;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.namespace.pureLegsCore;
+import org.mvcexpress.utils.checkClassSuperclass;
 
 /**
  * Handles command mappings, and executes them on messages
@@ -17,19 +18,19 @@ public class CommandMap {
 	private var messanger:Messenger;
 	private var proxyMap:ProxyMap;
 	private var mediatorMap:MediatorMap;
-	private var processMap:ProcessMap;
 	
 	private var classRegistry:Dictionary = new Dictionary();
-		
+	
+	private var debugFunction:Function;
+	
 	/** types of command execute function needed for debug mode only validation.  */
 	CONFIG::debug
 	private var commandClassParamTypes:Dictionary = new Dictionary();
 	
-	public function CommandMap(messanger:Messenger, proxyMap:ProxyMap, mediatorMap:MediatorMap, processMap:ProcessMap) {
+	public function CommandMap(messanger:Messenger, proxyMap:ProxyMap, mediatorMap:MediatorMap) {
 		this.messanger = messanger;
 		this.proxyMap = proxyMap;
 		this.mediatorMap = mediatorMap;
-		this.processMap = processMap;
 	}
 	
 	/**
@@ -41,7 +42,13 @@ public class CommandMap {
 		// check if command has execute function, parameter, and store type of parameter object for future checks on execute.
 		use namespace pureLegsCore;
 		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("+ CommandMap.map > type : " + type + ", commandClass : " + commandClass);
+			}
 			validateCommandClass(commandClass);
+			if (!Boolean(type) || type == "null" || type == "undefined") {
+				throw Error("Message type:[" + type + "] can not be empty or 'null'. (You are trying to map command:" + commandClass + ")");
+			}
 		}
 		
 		if (!classRegistry[type]) {
@@ -50,7 +57,6 @@ public class CommandMap {
 		}
 		
 		// TODO : check if command is already added. (in DEBUG mode only?.)
-		
 		classRegistry[type].push(commandClass);
 	
 	}
@@ -61,6 +67,11 @@ public class CommandMap {
 	 * @param	commandClass	Command class that will bi instantiated and executed.
 	 */
 	public function unmap(type:String, commandClass:Class):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("- CommandMap.unmap > type : " + type + ", commandClass : " + commandClass);
+			}
+		}
 		var commandList:Vector.<Class> = classRegistry[type];
 		if (commandList) {
 			for (var i:int = 0; i < commandList.length; i++) {
@@ -83,18 +94,24 @@ public class CommandMap {
 		////// INLINE FUNCTION runCommand() START
 		// check if command has execute function, parameter, and store type of parameter object for future checks on execute.
 		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("* CommandMap.execute > commandClass : " + commandClass + ", params : " + params);
+			}
 			validateCommandParams(commandClass, params);
 		}
 		
-		CONFIG::debug {Command.canConstruct = true;}
+		CONFIG::debug {
+			Command.canConstruct = true;
+		}
 		var command:Command = new commandClass();
-		CONFIG::debug {Command.canConstruct = false;}
+		CONFIG::debug {
+			Command.canConstruct = false;
+		}
 		
 		use namespace pureLegsCore;
 		command.messenger = messanger;
 		command.mediatorMap = mediatorMap;
 		command.proxyMap = proxyMap;
-		command.processMap = processMap;
 		
 		command.commandMap = this;
 		proxyMap.injectStuff(command, commandClass);
@@ -108,8 +125,8 @@ public class CommandMap {
 	}
 	
 	/* function to be called by messenger on needed mesage type sent */
-	private function handleCommandExecute(type:String, params:Object):void {
-		var commandList:Vector.<Class> = classRegistry[type];
+	private function handleCommandExecute(messageType:String, params:Object):void {
+		var commandList:Vector.<Class> = classRegistry[messageType];
 		if (commandList) {
 			for (var i:int = 0; i < commandList.length; i++) {
 				//////////////////////////////////////////////
@@ -120,9 +137,13 @@ public class CommandMap {
 					validateCommandParams(commandList[i], params);
 				}
 				
-				CONFIG::debug {Command.canConstruct = true;}
+				CONFIG::debug {
+					Command.canConstruct = true;
+				}
 				var command:Command = new commandList[i]();
-				CONFIG::debug {Command.canConstruct = false;}
+				CONFIG::debug {
+					Command.canConstruct = false;
+				}
 				
 				use namespace pureLegsCore;
 				command.messenger = messanger;
@@ -132,7 +153,11 @@ public class CommandMap {
 				command.commandMap = this;
 				
 				proxyMap.injectStuff(command, commandList[i]);
-				
+				CONFIG::debug {
+					if (debugFunction != null) {
+						debugFunction("* CommandMap.handleCommandExecute > messageType : " + messageType + ", params : " + params + " Executed with : " + commandList[i]);
+					}
+				}
 				command.execute(params);
 				
 					////// INLINE FUNCTION runCommand() END
@@ -142,7 +167,7 @@ public class CommandMap {
 	}
 	
 	/**
-	 * Dispose commandMap on module shutDown 
+	 * Dispose commandMap on module shutDown
 	 * @private
 	 */
 	pureLegsCore function dispose():void {
@@ -151,13 +176,17 @@ public class CommandMap {
 		mediatorMap = null;
 		classRegistry = null;
 	}
-
+	
 	/**
 	 * Helper funcitons for error checking
 	 * @private
 	 */
 	CONFIG::debug
 	pureLegsCore function validateCommandClass(commandClass:Class):void {
+		
+		if (!checkClassSuperclass(commandClass, "org.mvcexpress.mvc::Command")) {
+			throw Error("commandClass:" + commandClass + " you are trying to map MUST extend: 'org.mvcexpress.mvc::Command' class.");
+		}
 		
 		if (!commandClassParamTypes[commandClass]) {
 			
@@ -199,6 +228,51 @@ public class CommandMap {
 				throw Error("Class " + commandClass + " expects " + commandClassParamTypes[commandClass] + ". But you are sending :" + getQualifiedClassName(params));
 			}
 		}
+	}
+	
+	//----------------------------------
+	//     Debug
+	//----------------------------------
+	
+	/**
+	 * Checks if Command class is already added to message type
+	 * @param	type			Message type for command class to react to.
+	 * @param	commandClass	Command class that will bi instantiated and executed.
+	 * @return					true if Command class is already mapped to message
+	 */
+	public function isMapped(type:String, commandClass:Class):Boolean {
+		var retVal:Boolean = false;
+		if (classRegistry[type]) {
+			var mappedClasses:Vector.<Class> = classRegistry[type];
+			for (var i:int = 0; i < mappedClasses.length; i++) {
+				if (commandClass == mappedClasses[i]) {
+					retVal = true;
+				}
+			}
+		}
+		return retVal;
+	}
+	
+	/**
+	 * Returns text of all command classes that are mapped to messages.
+	 * @return		Text with all mapped commands.
+	 */
+	public function listMappings():String {
+		var retVal:String = "";
+		retVal = "===================== CommandMap Mappings: =====================\n";
+		for (var key:String in classRegistry) {
+			retVal += "SENDING MESSAGE:'" + key + "'\t> EXECUTES > " + classRegistry[key] + "\n";
+		}
+		retVal += "================================================================\n";
+		return retVal;
+	}
+	
+	pureLegsCore function listMessageCommands(messageType:String):Vector.<Class> {
+		return classRegistry[messageType];
+	}
+	
+	pureLegsCore function setDebugFunction(debugFunction:Function):void {
+		this.debugFunction = debugFunction;
 	}
 
 }

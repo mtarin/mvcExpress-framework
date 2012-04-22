@@ -1,6 +1,5 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.mvc {
-import org.mvcexpress.base.interfaces.IProcessMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
 
@@ -13,8 +12,6 @@ public class Proxy {
 	
 	/** @private */
 	pureLegsCore var messanger:Messenger;
-	
-	public var processMap:IProcessMap;
 	
 	public function Proxy(){
 	}

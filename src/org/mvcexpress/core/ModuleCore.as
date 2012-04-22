@@ -4,7 +4,6 @@ import flash.display.DisplayObjectContainer;
 import flash.utils.getDefinitionByName;
 import org.mvcexpress.base.CommandMap;
 import org.mvcexpress.base.MediatorMap;
-import org.mvcexpress.base.ProcessMap;
 import org.mvcexpress.base.ProxyMap;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
@@ -24,11 +23,11 @@ public class ModuleCore {
 	
 	protected var mediatorMap:MediatorMap;
 	
-	protected var processMap:ProcessMap;
-	
 	protected var commandMap:CommandMap;
 	
 	private var messenger:Messenger;
+	
+	private var _debugFunction:Function;
 	
 	/**
 	 * CONSTRUCTOR
@@ -38,18 +37,16 @@ public class ModuleCore {
 		use namespace pureLegsCore;
 		messenger = Messenger.getInstance();
 		
-		processMap = new ProcessMap(messenger);
-		
-		proxyMap = new ProxyMap(messenger, processMap);
+		proxyMap = new ProxyMap(messenger);
 		// check if flex is used.
 		var uiComponentClass:Class = getFlexClass();
 		// if flex is used - special FlexMediatorMap Class is instantiated that wraps mediate() and unmediate() functions to handle flex 'creationComplete' isues.
 		if (uiComponentClass) {
-			mediatorMap = new FlexMediatorMap(messenger, proxyMap, processMap, uiComponentClass);
+			mediatorMap = new FlexMediatorMap(messenger, proxyMap, uiComponentClass);
 		} else {
-			mediatorMap = new MediatorMap(messenger, proxyMap, processMap);
+			mediatorMap = new MediatorMap(messenger, proxyMap);
 		}
-		commandMap = new CommandMap(messenger, proxyMap, mediatorMap, processMap);
+		commandMap = new CommandMap(messenger, proxyMap, mediatorMap);
 		
 		onInit();
 	}
@@ -76,13 +73,10 @@ public class ModuleCore {
 		commandMap.dispose();
 		mediatorMap.dispose();
 		proxyMap.dispose();
-		processMap.dispose();
 		
 		commandMap = null;
 		mediatorMap = null;
 		proxyMap = null;
-		processMap = null;
-		
 		messenger = null;
 	}
 	
@@ -113,5 +107,56 @@ public class ModuleCore {
 		}
 		return uiComponentClass;
 	}
+	
+	//----------------------------------
+	//     Debug
+	//----------------------------------
+	
+	/**
+	 * Sets a debug function that will get all framework activity as string messages.
+	 * WARNING : will work only with compile variable CONFIG:debug set to true.
+	 * @param	debugFunction
+	 */
+	public function setDebugFunction(debugFunction:Function):void {
+		this.debugFunction = debugFunction;
+	}
+	
+	private function set debugFunction(value:Function):void {
+		_debugFunction = value;
+		use namespace pureLegsCore;
+		proxyMap.setDebugFunction(_debugFunction);
+		mediatorMap.setDebugFunction(_debugFunction);
+		commandMap.setDebugFunction(_debugFunction);
+		messenger.setDebugFunction(_debugFunction);
+	}
+	
+	/**
+	 * List all message mappings.
+	 */
+	public function listMappedMessages():String {
+		return messenger.listMappings(commandMap);
+	}
+	
+	/**
+	 * List all view mappings.
+	 */
+	public function listMappedMediators():String {
+		return mediatorMap.listMappings();
+	}
+	
+	/**
+	 * List all model mappings.
+	 */
+	public function listMappedProxies():String {
+		return proxyMap.listMappings();
+	}
+	
+	/**
+	 * List all controller mappings.
+	 */
+	public function listMappedCommands():String {
+		return commandMap.listMappings();
+	}
+
 }
 }

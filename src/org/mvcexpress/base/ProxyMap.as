@@ -16,18 +16,18 @@ import org.mvcexpress.namespace.pureLegsCore;
 public class ProxyMap {
 	
 	/** */
-	private var proxyRegistry:Dictionary = new Dictionary();
+	private var injectClassRegistry:Dictionary = new Dictionary();
 	
 	/** */
 	private var classInjectRules:Dictionary = new Dictionary();
 	
 	/** Communication object for sending messages*/
 	private var messenger:Messenger;
-	private var processMap:ProcessMap;
 	
-	public function ProxyMap(messenger:Messenger, processMap:ProcessMap) {
+	private var debugFunction:Function;
+	
+	public function ProxyMap(messenger:Messenger) {
 		this.messenger = messenger;
-		this.processMap = processMap;
 	}
 	
 	/**
@@ -37,21 +37,26 @@ public class ProxyMap {
 	 * @param	name		Optional name if you need more then one proxy instance of same class.
 	 */
 	public function map(proxyObject:Proxy, injectClass:Class = null, name:String = ""):void {
-		var proxyClass:Class = (proxyObject as Object).constructor;
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("+ ProxyMap.map > proxyObject : " + proxyObject + ", injectClass : " + injectClass + ", name : " + name);
+			}
+		}
+		
+		var proxyClass:Class = Object(proxyObject).constructor;
 		
 		if (!injectClass) {
 			injectClass = proxyClass;
 		}
 		var className:String = getQualifiedClassName(injectClass);
-		if (!proxyRegistry[className + name]) {
+		if (!injectClassRegistry[className + name]) {
 			use namespace pureLegsCore;
 			proxyObject.messanger = messenger;
-			proxyObject.processMap = processMap;
 			injectStuff(proxyObject, proxyClass);
-			proxyRegistry[className + name] = proxyObject;
+			injectClassRegistry[className + name] = proxyObject;
 			proxyObject.register();
 		} else {
-			throw Error("Proxy object class is already mapped.[" + className + name + "]");
+			throw Error("Proxy object class is already mapped.[injectClass:" + className + " name:" + name + "]");
 		}
 	}
 	
@@ -62,10 +67,16 @@ public class ProxyMap {
 	 * @param	name		name added to class, that was previously mapped for injection
 	 */
 	public function unmap(injectClass:Class, name:String = ""):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("- ProxyMap.unmap > injectClass : " + injectClass + ", name : " + name);
+			}
+		}
+		
 		var className:String = getQualifiedClassName(injectClass);
 		use namespace pureLegsCore;
-		(proxyRegistry[className + name] as Proxy).remove();
-		delete proxyRegistry[className + name];
+		(injectClassRegistry[className + name] as Proxy).remove();
+		delete injectClassRegistry[className + name];
 	}
 	
 	/**
@@ -78,7 +89,7 @@ public class ProxyMap {
 		//use namespace pureLegsCore;
 		//proxyObject.remove();
 		//}
-		proxyRegistry = null;
+		injectClassRegistry = null;
 		classInjectRules = null;
 		messenger = null;
 	}
@@ -96,10 +107,10 @@ public class ProxyMap {
 		if (tempValue) {
 			if (tempClass) {
 				tempClassName = getQualifiedClassName(tempClass);
-				if (!proxyRegistry[tempClassName]) {
-					proxyRegistry[tempClassName] = tempValue;
+				if (!injectClassRegistry[tempClassName]) {
+					injectClassRegistry[tempClassName] = tempValue;
 				} else {
-					throw Error("Temp config sholud not be maped...");
+					throw Error("Temp config sholud not be maped... it was ment to be used by framework for mediator view object only.");
 				}
 			}
 		}
@@ -118,24 +129,23 @@ public class ProxyMap {
 		
 		// injects all dependencies using rules.
 		for (var i:int = 0; i < rules.length; i++) {
-			var injectObject:Object = proxyRegistry[rules[i].injectClassAndName];
+			var injectObject:Object = injectClassRegistry[rules[i].injectClassAndName];
 			if (injectObject) {
 				object[rules[i].varName] = injectObject
 			} else {
-				throw Error("Inject object is not found for class:" + rules[i].injectClassAndName);
+				throw Error("Inject object is not found for class with id:" + rules[i].injectClassAndName + "(needed in " + object + ")");
 			}
 		}
 		
 		// dispose temporal injection if it was used.
 		if (tempClassName) {
-			delete proxyRegistry[tempClassName];
+			delete injectClassRegistry[tempClassName];
 		}
 	}
 	
 	/**
 	 * finds and cashes class injection point rules.
 	 */
-	// TODO : dublicated code.. consider moving to dedicated class...
 	private function getInjectRules(signatureClass:Class):Vector.<InjectRuleVO> {
 		var retVal:Vector.<InjectRuleVO> = new Vector.<InjectRuleVO>();
 		var classDescription:XML = describeType(signatureClass);
@@ -165,6 +175,47 @@ public class ProxyMap {
 		}
 		return retVal;
 	}
-
+	
+	//----------------------------------
+	//     Debug
+	//----------------------------------
+	
+	/**
+	 * Checks if proxy object is already mapped.
+	 * @param	proxyObject	Proxy instance to use for injection.
+	 * @param	injectClass	Optional class to use for injection, if null proxyObject class is used. It is helpfull if you want to map proxy interface or subclass.
+	 * @param	name		Optional name if you need more then one proxy instance of same class.
+	 * @return				true if object is already mapped.
+	 */
+	public function isMapped(proxyObject:Proxy, injectClass:Class = null, name:String = ""):Boolean {
+		var retVal:Boolean = false;
+		var proxyClass:Class = Object(proxyObject).constructor;
+		if (!injectClass) {
+			injectClass = proxyClass;
+		}
+		var className:String = getQualifiedClassName(injectClass);
+		if (injectClassRegistry[className + name]) {
+			retVal = true;
+		}
+		return retVal;
+	}
+	
+	/**
+	 * Returns text of all mapped proxy objects, and keys they are mapped to.
+	 * @return		Text with all mapped proxies.
+	 */
+	public function listMappings():String {
+		var retVal:String = "";
+		retVal = "====================== ProxyMap Mappings: ======================\n";
+		for (var key:Object in injectClassRegistry) {
+			retVal += "PROXY OBJECT:'" + injectClassRegistry[key] + "'\t\t\t(MAPPED TO:" + key + ")\n";
+		}
+		retVal += "================================================================\n";
+		return retVal;
+	}
+	
+	pureLegsCore function setDebugFunction(debugFunction:Function):void {
+		this.debugFunction = debugFunction;
+	}
 }
 }

@@ -1,8 +1,8 @@
 package com.mindScriptAct.liveSample.controler.setup {
 import com.mindScriptAct.liveSample.constants.FrameTickerId;
-import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
-import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
-import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
+//import com.mindScriptAct.liveSample.engine.areaItem.BlobItemProcess;
+//import com.mindScriptAct.liveSample.engine.areaItem.BrickItemProcess;
+//import com.mindScriptAct.liveSample.engine.hero.HeroProcess;
 import com.mindScriptAct.liveSample.model.areaItems.BlobVO;
 import com.mindScriptAct.liveSample.model.areaItems.BrickVO;
 import com.mindScriptAct.liveSample.model.areaItems.PlayAreaItemProxy;
@@ -27,15 +27,15 @@ public class SetupModelCommand extends Command {
 		var heroPosition:Point = new Point();
 		var heroDirection:Point = new Point();
 		
-		processMap.injectTo(HeroProcess, HeroProcess.NAME, heroPosition, "heroPosition", heroDirection, "heroDirection");
+		//processMap.injectTo(HeroProcess, HeroProcess.NAME, heroPosition, "heroPosition", heroDirection, "heroDirection");
 		proxyMap.map(new HeroProxy(heroPosition, heroDirection));
 		
 		var blobs:Vector.<BlobVO> = new Vector.<BlobVO>();
-		processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, blobs);
+		//processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, blobs);
 		
 		var bricks:Vector.<BrickVO> = new Vector.<BrickVO>();
-		processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
-		processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, bricks);
+		//processMap.injectTo(BrickItemProcess, BrickItemProcess.NAME, bricks);
+		//processMap.injectTo(BlobItemProcess, BlobItemProcess.NAME, bricks);
 		
 		proxyMap.map(new PlayAreaItemProxy(blobs, bricks));
 	
