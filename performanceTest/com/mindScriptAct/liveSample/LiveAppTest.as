@@ -1,5 +1,6 @@
 package com.mindScriptAct.liveSample {
 import flash.display.Sprite;
+import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.events.StatusEvent;
 import utils.debug.Stats;
@@ -12,6 +13,7 @@ public class LiveAppTest extends Sprite {
 	private var module:LiveAppModule
 	
 	public function LiveAppTest():void {
+		this.stage.scaleMode = StageScaleMode.NO_SCALE;
 		if (stage) {
 			init();
 		} else {
