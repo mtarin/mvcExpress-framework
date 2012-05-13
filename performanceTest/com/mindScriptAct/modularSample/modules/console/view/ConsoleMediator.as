@@ -19,7 +19,6 @@ public class ConsoleMediator extends Mediator {
 		
 		view.init();
 		view.inputBtn.addEventListener(MouseEvent.CLICK, handleInputText);
-		addHandler(ConsoleDataMsg.MESSAGE_ADDED, handleMessageAdded);
 	}
 	
 	private function handleInputText(event:MouseEvent):void {
@@ -33,7 +32,9 @@ public class ConsoleMediator extends Mediator {
 		}
 	}
 	
-	private function handleMessageAdded(message:String):void {
+	[Handler(message=ConsoleDataMsg.MESSAGE_ADDED)]
+	//[Handler(message="messageAdded")]
+	public function handleMessageAdded(message:String):void {
 		view.outputTf.appendText(message + "\n");
 	}
 

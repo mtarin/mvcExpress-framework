@@ -6,6 +6,7 @@ import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.base.inject.InjectRuleVO;
 import org.mvcexpress.messenger.Messenger;
+import org.mvcexpress.mvc.Mediator;
 import org.mvcexpress.mvc.Proxy;
 import org.mvcexpress.namespace.pureLegsCore;
 
@@ -25,6 +26,8 @@ public class ProxyMap {
 	private var messenger:Messenger;
 	
 	private var debugFunction:Function;
+	
+	private var describeTypes:Dictionary = new Dictionary();
 	
 	public function ProxyMap(messenger:Messenger) {
 		this.messenger = messenger;
@@ -137,6 +140,11 @@ public class ProxyMap {
 			}
 		}
 		
+		// EXPERIMENTAL : add handlers automaticaly for Mediators if they have 'Handler' metadata tags.
+		if (object is Mediator) {
+			setInjectedHandlers(object as Mediator, signatureClass);
+		}
+		
 		// dispose temporal injection if it was used.
 		if (tempClassName) {
 			delete injectClassRegistry[tempClassName];
@@ -174,6 +182,35 @@ public class ProxyMap {
 			}
 		}
 		return retVal;
+	}
+	
+	private function setInjectedHandlers(object:Mediator, signatureClass:Class):void {
+		var classDescription:XML = describeTypes[signatureClass];
+		if (!classDescription) {
+			classDescription = describeType(signatureClass);
+			describeTypes[signatureClass] = classDescription;
+		}
+		
+		var node:XML;
+		var xmllist:XMLList = classDescription.factory.*.(name() == "method");
+		for each (node in xmllist) {
+			var len:int = node.metadata.(@name == "Handler").length();
+			if (len > 0) {
+				for each (var n:XML in node) {
+					var methodName:String = n.@name.toString();
+					var metadata:XMLList = n.metadata.(@name == "Handler");
+					if (metadata[0]) {
+						var args:XMLList = metadata[0].arg;
+						if (args[0]) {
+							if (args[0].@key == "message") {
+								var messageType:String = args[0].@value.toString();
+								object.addHandler(messageType, object[methodName]);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	//----------------------------------

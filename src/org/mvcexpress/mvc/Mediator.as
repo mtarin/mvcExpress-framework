@@ -62,7 +62,7 @@ public class Mediator {
 	 * @param	type	message type for handle function to reoct to. 
 	 * @param	handler	function that will be called then needed message is sent. this functino must expect one parameter. (you can set your custom type for this param object, or leave it as Object)
 	 */
-	protected function addHandler(type:String, handler:Function):void {
+	public function addHandler(type:String, handler:Function):void {
 		use namespace pureLegsCore;
 		CONFIG::debug {
 			if (handler.length < 1) {
